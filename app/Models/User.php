@@ -65,4 +65,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Role::class, 'id', 'role_id');
     }
+
+    public function hasRole($role)
+    {
+        return $this->role->name = $role;
+    }
 }
