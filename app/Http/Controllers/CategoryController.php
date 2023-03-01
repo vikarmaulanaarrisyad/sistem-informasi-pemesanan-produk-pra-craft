@@ -32,7 +32,7 @@ class CategoryController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nama_kategori' => 'required|min:2',
-            'slug'  => 'required|unique:categories,slug',
+            'slug'  => 'unique:categories,slug',
         ]);
 
         if ($validator->fails()) {

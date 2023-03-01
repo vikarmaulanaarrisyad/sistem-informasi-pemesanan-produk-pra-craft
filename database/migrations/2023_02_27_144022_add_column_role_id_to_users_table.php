@@ -15,7 +15,7 @@ return new class extends Migration
             $table->unsignedBigInteger('role_id');
             $table->string('path_image')->nullable();
 
-            $table->foreign('role_id')->references('id')->on('roles');
+            $table->foreign('role_id')->references('id')->on('roles')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

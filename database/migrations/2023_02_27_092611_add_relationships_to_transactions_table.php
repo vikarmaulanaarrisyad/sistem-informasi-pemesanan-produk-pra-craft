@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('transactions', function (Blueprint $table) {
-            $table->foreign('order_id')->references('id')->on('orders');
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('ongkir_id')->references('id')->on('shipping_costs');
+            $table->foreign('order_id')->references('id')->on('orders')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('ongkir_id')->references('id')->on('shipping_costs')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

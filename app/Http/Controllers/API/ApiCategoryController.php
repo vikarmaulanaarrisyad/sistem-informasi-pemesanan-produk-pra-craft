@@ -23,4 +23,13 @@ class ApiCategoryController extends Controller
             ->escapeColumns([])
             ->make(true);
     }
+
+    public function ajaxSearch(Request $request)
+    {
+        $keyword = $request->get('q');
+
+        $categories = Category::where("nama_kategori", "LIKE", "%$keyword%")->get();
+
+        return $categories;
+    }
 }

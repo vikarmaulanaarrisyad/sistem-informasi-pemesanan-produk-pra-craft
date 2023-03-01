@@ -2,7 +2,8 @@
 
 use App\Http\Controllers\{
     CategoryController,
-    DashboardController
+    DashboardController,
+    ProductController
 };
 use Illuminate\Support\Facades\Route;
 
@@ -42,7 +43,8 @@ Route::group([
     Route::group([
         'middleware' => 'role:admin'
     ], function () {
-        Route::resource('/category', CategoryController::class)->except('edit','create');
+        Route::resource('/category', CategoryController::class)->except('edit', 'create');
+        Route::resource('/product', ProductController::class)->except('edit', 'create');
     });
 
     // Role Users

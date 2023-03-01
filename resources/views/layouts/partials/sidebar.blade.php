@@ -1,6 +1,6 @@
 @push('css')
     <style>
-        
+
     </style>
 @endpush
 
@@ -55,7 +55,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="pages/widgets.html" class="nav-link">
+                        <a href="{{ route('product.index') }}" class="nav-link {{ request()->is('product*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-folder"></i>
                             <p>
                                 Produk

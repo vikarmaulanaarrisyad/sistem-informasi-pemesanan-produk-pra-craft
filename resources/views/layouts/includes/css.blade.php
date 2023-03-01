@@ -43,6 +43,11 @@
         .nav-sidebar .nav-item .nav-link:hover {
             color: #49da5f;
         }
+
+        .img-thumbnail:hover {
+            -webkit-transform: scale(1.08);
+            transform: scale(1.08);
+        }
     </style>
 
     @push('scripts')
