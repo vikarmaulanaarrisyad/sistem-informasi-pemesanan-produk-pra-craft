@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title')</title>
 
     <!-- Google Font: Source Sans Pro -->
@@ -13,26 +14,20 @@
     <link rel="stylesheet" href="{{ asset('Templates/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- overlayScrollbars -->
     <link rel="stylesheet" href="{{ asset('Templates/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
+    {{-- SweetAlert2 --}}
+    <link rel="stylesheet" href="{{ asset('/Templates/plugins/sweetalert2/sweetalert2.min.css') }}">
 
     @stack('css_vendor')
 
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('Templates/dist/css/adminlte.min.css') }}">
 
-    <style>
-        .note-editor {
-            margin-bottom: 0;
-        }
-
-        .note-editor.is-invalid {
-            border-color: var(--danger);
-        }
-    </style>
+    @include('layouts.includes.css')
 
     @stack('css')
 </head>
 
-<body class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
     <div class="wrapper">
 
         <!-- Preloader -->
@@ -90,29 +85,32 @@
 
     <!-- REQUIRED SCRIPTS -->
     <!-- jQuery -->
-    <script src="{{ asset('Templates') }}/plugins/jquery/jquery.min.js"></script>
+    <script src="{{ asset('Templates/plugins/jquery/jquery.min.js') }}"></script>
     <!-- Bootstrap -->
-    <script src="{{ asset('Templates') }}/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('Templates/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <!-- overlayScrollbars -->
-    <script src="{{ asset('Templates') }}/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="{{ asset('Templates') }}/dist/js/adminlte.js"></script>
+    <script src="{{ asset('Templates/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
+
 
     <!-- PAGE {{ asset('Templates') }}/PLUGINS -->
     <!-- jQuery Mapael -->
-    <script src="{{ asset('Templates') }}/plugins/jquery-mousewheel/jquery.mousewheel.js"></script>
-    <script src="{{ asset('Templates') }}/plugins/raphael/raphael.min.js"></script>
-    <script src="{{ asset('Templates') }}/plugins/jquery-mapael/jquery.mapael.min.js"></script>
-    <script src="{{ asset('Templates') }}/plugins/jquery-mapael/maps/usa_states.min.js"></script>
+    <script src="{{ asset('Templates/plugins/jquery-mousewheel/jquery.mousewheel.js') }}"></script>
+    <script src="{{ asset('Templates/plugins/raphael/raphael.min.js') }}"></script>
+    <script src="{{ asset('Templates/plugins/jquery-mapael/jquery.mapael.min.js') }}"></script>
+    <script src="{{ asset('Templates/plugins/jquery-mapael/maps/usa_states.min.js') }}"></script>
     <!-- ChartJS -->
-    <script src="{{ asset('Templates') }}/plugins/chart.js/Chart.min.js"></script>
-
+    <script src="{{ asset('Templates/plugins/chart.js/Chart.min.js') }}"></script>
+    <!-- sweetalert2 -->
+    <script src="{{ asset('/Templates/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
     @stack('scripts_vendor')
 
-    <!-- AdminLTE for demo purposes -->
-    <script src="{{ asset('Templates') }}/dist/js/demo.js"></script>
+    <!-- AdminLTE App -->
+    <script src="{{ asset('Templates/dist/js/adminlte.js') }}"></script>
+    <script src="{{ asset('js/cutom.js') }}"></script>
+
+    {{-- <script src="{{ asset('Templates') }}/dist/js/demo.js"></script>
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="{{ asset('Templates') }}/dist/js/pages/dashboard2.js"></script>
+    <script src="{{ asset('Templates') }}/dist/js/pages/dashboard2.js"></script> --}}
 
     @stack('scripts')
 </body>
