@@ -91,22 +91,16 @@ class OrderController extends Controller
             $statusText = 'pending';
         }
 
-        $orders = Order::findOrfail($id);
-        $orderDetail = OrderDetail::where('order_id', $orders->id)->get();
+        $orders = Order::findOrFail($id);
+        $orderDetails = OrderDetail::where('order_id', $orders->id)->get();
 
         $stokKurang = false;
         $subTotal = 0;
-        foreach ($orderDetail as $item) {
-            $product = Product::findOrfail($item->product_id);
+
+        foreach ($orderDetails as $item) {
+            $product = Product::findOrFail($item->product_id);
             if ($product->stok >= $item->jumlah) {
-                $stokAwal = $product->stok;
-                $stokSekarang = $stokAwal - $item->jumlah;
-                $product->stok = $stokSekarang;
-
-                $subTotal += $item->jumlah * $product->harga;
-                $orders->total_harga = $subTotal;
-
-                $product->update();
+                // $subTotal += $item->jumlah * $product->harga;
             } else {
                 $stokKurang = true;
                 break;
@@ -114,12 +108,29 @@ class OrderController extends Controller
         }
 
         if ($stokKurang) {
-            $orders->update(['status' => 'pending']);
-            return response()->json(['message' => 'Stok kurang dari 0'], 422);
-        } else {
-            $orders->update(['status' => 'confirmed']);
-            return response()->json(['message' => 'Pesanan diproses'], 200);
+            $orders->status = 'pending';
+            $orders->save();
+            return response()->json(['message' => 'Stok produk kurang'], 422);
         }
-        return response()->json(['data' => $orders, 'message' => 'Pesanan berhasil ' . $statusText]);
+
+        foreach ($orderDetails as $item) {
+            $product = Product::findOrFail($item->product_id);
+            $stokAwal = $product->stok;
+
+            if ($stokAwal >= $item->jumlah) {
+                $stokSekarang = $stokAwal - $item->jumlah;
+                $product->stok = $stokSekarang;
+
+                $subTotal += $item->jumlah * $product->harga;
+
+                $product->update();
+            }
+        }
+
+        $orders->total_harga = $subTotal;
+        $orders->status = 'confirmed';
+        $orders->update();
+
+        return response()->json(['message' => 'Pesanan berhasil diproses']);
     }
 }
