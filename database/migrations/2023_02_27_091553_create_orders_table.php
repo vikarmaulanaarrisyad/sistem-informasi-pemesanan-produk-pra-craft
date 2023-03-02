@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->date('tgl_pesanan');
-            $table->string('status')->default('menunggu');
+            $table->enum('status',['confirmed', 'not confirmed','pending', 'canceled'])->default('pending');
             $table->integer('total_harga');
             $table->timestamps();
         });

@@ -3,7 +3,9 @@
 use App\Http\Controllers\{
     CategoryController,
     DashboardController,
-    ProductController
+    OrderController,
+    ProductController,
+    PelangganController,
 };
 use Illuminate\Support\Facades\Route;
 
@@ -45,6 +47,10 @@ Route::group([
     ], function () {
         Route::resource('/category', CategoryController::class)->except('edit', 'create');
         Route::resource('/product', ProductController::class)->except('edit', 'create');
+        Route::resource('/pelanggan', PelangganController::class)->except('edit', 'create');
+        Route::get('/orders/{id}/detail', [OrderController::class, 'detail'])->name('orders.detail');
+        Route::resource('/orders', OrderController::class)->except('edit', 'create');
+        Route::put('/orders/{id}/update_status', [OrderController::class, 'updateStatus'])->name('orders.update_status');
     });
 
     // Role Users

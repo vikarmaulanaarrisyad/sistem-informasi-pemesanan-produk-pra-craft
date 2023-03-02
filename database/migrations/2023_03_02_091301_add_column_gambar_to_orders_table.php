@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->unsignedBigInteger('role_id');
+        Schema::table('orders', function (Blueprint $table) {
             $table->string('gambar')->nullable();
-            $table->enum('status',['aktif','tidak aktif']);
-
-            $table->foreign('role_id')->references('id')->on('roles')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('alasan')->nullable();
         });
     }
 
@@ -25,11 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('role_id');
+        Schema::table('orders', function (Blueprint $table) {
             $table->dropColumn('gambar');
-
-            $table->dropForeign('users_role_id_foreign');
+            $table->dropColumn('alasan');
         });
     }
 };

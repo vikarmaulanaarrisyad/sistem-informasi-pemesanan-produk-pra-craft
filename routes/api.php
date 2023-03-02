@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\API\{
     ApiCategoryController,
+    ApiOrderController,
+    ApiPelangganController,
     ApiProductController,
 };
 use Illuminate\Http\Request;
@@ -23,5 +25,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/categories/data', [ApiCategoryController::class, 'getDataCategory'])->name('api.data.category');
+
 Route::get('/product/data', [ApiProductController::class, 'getDataProduct'])->name('api.data.product');
 Route::get('/categories/search', [ApiProductController::class, 'getCategoryProduct'])->name('api.search.category');
+
+Route::get('/pelanggan/data', [ApiPelangganController::class, 'getDataPelanggan'])->name('api.data.pelanggan');
+
+Route::get('/orders/data', [ApiOrderController::class, 'getDataOrder'])->name('api.data.order');
+
