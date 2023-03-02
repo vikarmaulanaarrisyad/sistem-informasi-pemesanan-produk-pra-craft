@@ -12,24 +12,16 @@
 
     <div class="row">
         <div class="col-md">
-            <x-card>
-                <div class="row">
-                    <div class="col-md-4 text-center">
-                        <h5>Nama Pemesan <b>{{ $orders->user->name }}</b></h5>
-                    </div>
-                    <div class="col-md-4">
-                        <h5>Dibuat pada <b>{{ tanggal_indonesia($orders->tgl_pesanan, true) }}</b></h5>
-                    </div>
-                    <div class="col-md-4">
-                        <h5>Status pesanan <strong>{{ $orders->statusText() }}</strong></h5>
-                    </div>
-                </div>
-            </x-card>
+
         </div>
     </div>
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
+            <x-card></x-card>
+        </div>
+
+        <div class="col-md-6">
             <x-card>
                 <x-table>
                     <x-slot name="thead">
@@ -40,15 +32,15 @@
                     </x-slot>
                     @foreach ($orderDetail as $item)
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
+                            <td width="10%">{{ $loop->iteration }}</td>
                             <td>{{ $item->product->nama_produk }}</td>
                             <td>{{ $item->jumlah }}</td>
-                            <td>{{ $item->harga }}</td>
+                            <td>{{ format_uang($item->product->harga) }}</td>
                         </tr>
                     @endforeach
                     <tr>
                         <td colspan="3" class="text-center text-bold">Jumlah</td>
-                        <td>{{ $item->order->total_harga }}</td>
+                        <td>{{ format_uang($subTotal) }}</td>
                     </tr>
                 </x-table>
 
@@ -96,6 +88,7 @@
                 </x-slot>
             </x-card>
         </div>
+
     </div>
 
     <x-modal size="modal-md">
@@ -125,7 +118,7 @@
     <script>
         let modal = '#modal-form';
 
-        function editForm(url, status, message, color, product) {
+        function editForm(url, status, message, color) {
             $(modal).modal('show');
             $(`${modal} form`).attr('action', url);
             $(`${modal} [name=_method]`).val('put');
@@ -134,7 +127,7 @@
             $(`${modal} [name=status]`).val(status);
             $(`${modal} .text-message`).html(message);
             $(`${modal} .alert`).removeClass('alert-success alert-danger').addClass(`alert-${color}`);
-            if (status == 'rejected') {
+            if (status == 'not confirmed') {
                 $('.reason-rejected').show()
             } else {
                 $('.reason-rejected').hide()

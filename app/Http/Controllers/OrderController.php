@@ -49,8 +49,13 @@ class OrderController extends Controller
     {
         $orders = Order::findOrfail($id);
         $orderDetail = OrderDetail::where('order_id', $orders->id)->get();
+        $subTotal = 0;
+        foreach ($orderDetail as $item) {
+            $product = Product::findOrFail($item->product_id);
+            $subTotal += $item->jumlah * $product->harga;
+        }
 
-        return view('admin.orders.detail', compact('orders', 'orderDetail'));
+        return view('admin.orders.detail', compact('orders', 'orderDetail', 'subTotal'));
     }
 
     /**
@@ -79,10 +84,6 @@ class OrderController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $orders = Order::findOrfail($id);
-
-        $orders->update($request->only('status'));
-
         $statusText = "";
         if ($request->status == 'confirmed') {
             $statusText = 'dikonfirmasi';
@@ -90,18 +91,35 @@ class OrderController extends Controller
             $statusText = 'pending';
         }
 
-        if ($orders->status == 'confirmed') {
-            $orderDetail = OrderDetail::where('order_id', $orders->id)->get();
+        $orders = Order::findOrfail($id);
+        $orderDetail = OrderDetail::where('order_id', $orders->id)->get();
 
-            foreach ($orderDetail as $item) {
-                $product = Product::findOrfail($item->product_id);
+        $stokKurang = false;
+        $subTotal = 0;
+        foreach ($orderDetail as $item) {
+            $product = Product::findOrfail($item->product_id);
+            if ($product->stok >= $item->jumlah) {
                 $stokAwal = $product->stok;
                 $stokSekarang = $stokAwal - $item->jumlah;
                 $product->stok = $stokSekarang;
+
+                $subTotal += $item->jumlah * $product->harga;
+                $orders->total_harga = $subTotal;
+
                 $product->update();
+            } else {
+                $stokKurang = true;
+                break;
             }
         }
 
+        if ($stokKurang) {
+            $orders->update(['status' => 'pending']);
+            return response()->json(['message' => 'Stok kurang dari 0'], 422);
+        } else {
+            $orders->update(['status' => 'confirmed']);
+            return response()->json(['message' => 'Pesanan diproses'], 200);
+        }
         return response()->json(['data' => $orders, 'message' => 'Pesanan berhasil ' . $statusText]);
     }
 }
