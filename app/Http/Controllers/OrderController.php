@@ -21,9 +21,20 @@ class OrderController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function invoice(Request $request, $id)
     {
-        //
+        $orders = Order::findOrfail($id);
+        $orderDetail = OrderDetail::where('order_id', $orders->id)->get();
+
+        return view('admin.orders.invoice', compact('orders', 'orderDetail'));
+    }
+
+    public function printInvoice(Request $request, $id)
+    {
+        $orders = Order::findOrfail($id);
+        $orderDetail = OrderDetail::where('order_id', $orders->id)->get();
+
+        return view('admin.orders.print_invoice', compact('orders', 'orderDetail'));
     }
 
     /**

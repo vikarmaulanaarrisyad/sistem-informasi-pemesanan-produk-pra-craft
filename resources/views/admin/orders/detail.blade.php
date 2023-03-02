@@ -9,18 +9,48 @@
 @endsection
 
 @section('content')
-
     <div class="row">
-        <div class="col-md">
 
-        </div>
-    </div>
-
-    <div class="row">
         <div class="col-md-6">
-            <x-card></x-card>
-        </div>
+            <x-card>
+                <div class="card-body box-profile">
+                    <div class="text-center">
+                        <img class="profile-user-img img-fluid img-circle"
+                            src="{{ asset('Templates/dist/img/user4-128x128.jpg') }}" alt="User profile picture">
+                    </div>
+                    <h3 class="profile-username text-center">{{ $orders->user->name }}</h3>
+                    <p class="text-muted text-center">{{ $orders->user->email }}</p>
+                    <ul class="list-group list-group-unbordered mb-3">
+                        <li class="list-group-item">
+                            <b>Nomor Telepon</b> <a class="float-right">{{ $orders->user->telepon }}</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Alamat</b> <a class="float-right">{{ $orders->user->alamat }}</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Tanggal pesanan ini dibuat </b> <a class="float-right">
+                                {{ tanggal_indonesia($orders->created_at) }} -
+                                {{ date('H:i:s', strtotime($orders->created_at)) }}</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Status pesanan anda </b> <a class="float-right">
+                                @if ($orders->status == 'confirmed')
+                                    Sedang dalam proses pengiriman
+                                @endif
 
+                                @if ($orders->status == 'pending')
+                                    Sedang dalam proses packing
+                                @endif
+                            </a>
+                        </li>
+                    </ul>
+                    @if ($orders->status == 'confirmed')
+                        <a href="{{ route('orders.invoice', $orders->id) }}" class="btn btn-success btn-block"><b>Buat
+                                Invoice</b></a>
+                    @endif
+                </div>
+            </x-card>
+        </div>
         <div class="col-md-6">
             <x-card>
                 <x-table>
@@ -86,6 +116,14 @@
                         @default
                     @endswitch
                 </x-slot>
+            </x-card>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <x-card>
+
             </x-card>
         </div>
 

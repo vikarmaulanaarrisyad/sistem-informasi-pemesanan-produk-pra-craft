@@ -7,6 +7,7 @@ use App\Http\Controllers\{
     ProductController,
     PelangganController,
 };
+use App\Http\Controllers\Front\FrontController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,9 +21,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('auth.login');
-});
+
 
 // Route::middleware([
 //     'auth:sanctum',
@@ -33,6 +32,28 @@ Route::get('/', function () {
 //         return view('dashboard');
 //     })->name('dashboard');
 // });
+
+
+// Route::get('/', function () {
+//     return view('auth.login');
+// });
+
+Route::get('/', [FrontController::class, 'index']);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Route::group([
     'middleware' => ['auth', 'role:admin,user']
@@ -51,6 +72,8 @@ Route::group([
         Route::get('/orders/{id}/detail', [OrderController::class, 'detail'])->name('orders.detail');
         Route::resource('/orders', OrderController::class)->except('edit', 'create');
         Route::put('/orders/{id}/update_status', [OrderController::class, 'updateStatus'])->name('orders.update_status');
+        Route::get('/orders/{id}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
+        Route::get('/orders/{id}/print_invoice', [OrderController::class, 'printInvoice'])->name('orders.print_invoice');
     });
 
     // Role Users
