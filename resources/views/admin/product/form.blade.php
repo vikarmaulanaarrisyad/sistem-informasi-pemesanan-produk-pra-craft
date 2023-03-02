@@ -14,7 +14,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="categories">Kategori</label>
-                <select name="categories[]" id="categories" class="select2" multiple>
+                <select name="categories[]" id="categories" class="form-control select2" multiple="multiple">
                     @foreach ($category as $key => $item)
                         <option value="{{ $key }}">{{ $item }}</option>
                     @endforeach

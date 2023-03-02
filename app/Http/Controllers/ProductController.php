@@ -80,10 +80,13 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show($id)
     {
-        $product['gambar'] = Storage::url($product->gambar);
-        $product['categories'] = $product->category_product;
+        $product = Product::findOrFail($id);
+
+        $product->gambar = Storage::url($product->gambar);
+        $product->categories = $product->category_product;
+
 
         return response()->json(['data' => $product]);
     }
@@ -99,15 +102,17 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request,  $id)
     {
+        $product = Product::findOrFail($id);
+
         $validator = Validator::make($request->all(), [
             'nama_produk' => 'required|min:2',
             'deskripsi' => 'required|min:5',
             'harga' => 'required|regex:/^[0-9.]+$/|min:1',
             'stok'  => 'required|numeric',
             'gambar' => 'nullable|mimes:jpg,png,jpeg|min:200|max:2048',
-            'categories' => 'required|array',
+            'categories' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -123,7 +128,7 @@ class ProductController extends Controller
             'stok' => $request->stok,
         ];
 
-        if ($request->hasFile('path_image')) {
+        if ($request->hasFile('gambar')) {
             if (Storage::disk('public')->exists($product->gambar)) {
                 Storage::disk('public')->delete($product->gambar);
             }
@@ -131,12 +136,7 @@ class ProductController extends Controller
             $data['gambar'] = upload('product', $request->file('gambar'), 'product');
         }
 
-        $product->nama_produk = $data['nama_produk'];
-        $product->deskripsi = $data['deskripsi'];
-        $product->harga = $data['harga'];
-        $product->stok = $data['stok'];
-        $product->gambar = $data['gambar'];
-        $product->update();
+        $product->update($data);
 
         $product->category_product()->sync($request->categories);
 

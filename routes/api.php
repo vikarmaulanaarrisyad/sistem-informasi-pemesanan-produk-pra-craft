@@ -23,5 +23,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/categories/data', [ApiCategoryController::class, 'getDataCategory'])->name('api.data.category');
-Route::get('/categories/search', [ApiCategoryController::class, 'ajaxSearch'])->name('api.search.product');
 Route::get('/product/data', [ApiProductController::class, 'getDataProduct'])->name('api.data.product');
+Route::get('/categories/search', [ApiProductController::class, 'getCategoryProduct'])->name('api.search.category');

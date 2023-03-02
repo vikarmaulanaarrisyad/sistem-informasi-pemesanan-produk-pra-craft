@@ -85,7 +85,8 @@
             $(button).prop('disabled', false);
 
             resetForm(`${modal} form`);
-            
+
+
             $('#categories').val('').trigger('change');
         }
 
@@ -96,25 +97,20 @@
                     $(`${modal} .modal-title`).text(title);
                     $(`${modal} form`).attr('action', url);
                     $(`${modal} [name=_method]`).val('PUT');
+                    resetForm(`${modal} form`);
+                    loopForm(response.data);
                     $('#spinner-border').hide();
                     $(button).prop('disabled', false);
                     $('[name=harga]').val(format_uang(response.data.harga));
 
-                    // let selectedCategories = [];
-                    // response.data.categories.forEach(item => {
-                    //     selectedCategories.push(item.id);
-                    // });
-                    // $('#categories')
-                    //     .val(selectedCategories)
-                    //     .trigger('change');
-
-                    response.data.categories.forEach(function(category) {
-                        var option1 = new Option(category.nama_kategori, category.id, true, true);
-                        $('#categories').append(option1).trigger('change');
+                    let selectedCategories = [];
+                    response.data.categories.forEach(item => {
+                        selectedCategories.push(item.id);
                     });
-
-                    resetForm(`${modal} form`);
-                    loopForm(response.data);
+                    
+                    $('#categories')
+                        .val(selectedCategories)
+                        .trigger('change');
                 })
                 .fail(errors => {
                     Swall.fire({
@@ -227,16 +223,14 @@
         }
     </script>
 
-
     <script type="text/javascript">
         $(function() {
             $('#spinner-border').hide();
-
             // categories
             $('#categories').select2({
                 placeholder: 'Pilih Kategori',
                 ajax: {
-                    url: "{{ route('api.search.product') }}",
+                    url: "{{ route('api.search.category') }}",
                     type: 'get',
                     dataType: 'json',
                     delay: 200,

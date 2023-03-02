@@ -32,4 +32,13 @@ class ApiProductController extends Controller
             ->make(true);
     }
 
+    public function getCategoryProduct(Request $request)
+    {
+        $keyword = $request->get('q');
+
+        $categories = Category::where("nama_kategori", "LIKE", "%$keyword%")->get();
+
+        return $categories;
+    }
+
 }
