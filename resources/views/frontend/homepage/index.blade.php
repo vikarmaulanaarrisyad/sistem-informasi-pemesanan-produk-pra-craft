@@ -3,7 +3,7 @@
 @section('title', 'Toko Online')
 
 @section('content')
-    <div class ="row">
+    <div class="row">
 
         <!-- ========================================== SECTION – HERO ========================================= -->
 
@@ -19,11 +19,11 @@
             <div class="more-info-tab clearfix ">
                 <h3 class="new-product-title pull-left">New Products</h3>
                 <ul class="nav nav-tabs nav-tab-line pull-right" id="new-products-1">
-                    <li class="active"><a data-transition-type="backSlide" href="#all" data-toggle="tab">All</a></li>
+                    {{-- <li class="active"><a data-transition-type="backSlide" href="#all" data-toggle="tab">All</a></li>
                     <li><a data-transition-type="backSlide" href="#smartphone" data-toggle="tab">Clothing</a></li>
                     <li><a data-transition-type="backSlide" href="#laptop" data-toggle="tab">Electronics</a></li>
-                    <li><a data-transition-type="backSlide" href="#apple" data-toggle="tab">Shoes</a>
-                    </li>
+                    <li><a data-transition-type="backSlide" href="#apple" data-toggle="tab">Shoes</a></li> --}}
+
                 </ul>
                 <!-- /.nav-tabs -->
             </div>
@@ -39,26 +39,25 @@
                                             <div class="product-image">
                                                 <div class="image">
                                                     <a href="detail.html">
-                                                        <img src="{{ Storage::url($item->gambar)}}"
-                                                            alt="">
-                                                        <img src="{{ Storage::url($item->gambar)}}"
-                                                            alt="" class="hover-image">
+                                                        <img src="{{ Storage::url($item->gambar) }}" alt="">
+                                                        <img src="{{ Storage::url($item->gambar) }}" alt=""
+                                                            class="hover-image">
                                                     </a>
                                                 </div>
                                                 <!-- /.image -->
 
-                                                @foreach ($item->category_product as $kategori )
-                                                    
-                                                <div class="tag new"><span>{{ $kategori->nama_kategori }}</span></div>
+                                                @foreach ($item->category_product as $kategori)
+                                                    <div class="tag new"><span>{{ $kategori->nama_kategori }}</span></div>
                                                 @endforeach
                                             </div>
                                             <!-- /.product-image -->
 
                                             <div class="product-info text-left">
-                                                <h3 class="name"><a href="detail.html">{{ $item->nama_produk}}</a></h3>
+                                                <h3 class="name"><a href="detail.html">{{ $item->nama_produk }}</a></h3>
                                                 <div class="rating rateit-small"></div>
                                                 <div class="description"></div>
-                                                <div class="product-price"> <span class="price">Rp. {{ format_uang($item->harga) }}
+                                                <div class="product-price"> <span class="price">Rp.
+                                                        {{ format_uang($item->harga) }}
                                                     </span> <span class="price-before-discount">$ 800</span>
                                                 </div>
                                                 <!-- /.product-price -->
@@ -75,8 +74,8 @@
                                                             <button class="btn btn-primary cart-btn" type="button">Add to
                                                                 cart</button>
                                                         </li>
-                                                        <li class="lnk wishlist"> <a data-toggle="tooltip" class="add-to-cart"
-                                                                href="detail.html" title="Wishlist"> <i
+                                                        <li class="lnk wishlist"> <a data-toggle="tooltip"
+                                                                class="add-to-cart" href="detail.html" title="Wishlist"> <i
                                                                     class="icon fa fa-heart"></i> </a> </li>
                                                         <li class="lnk"> <a data-toggle="tooltip" class="add-to-cart"
                                                                 href="detail.html" title="Compare"> <i class="fa fa-signal"
@@ -1145,9 +1144,8 @@
                                                         <button class="btn btn-primary cart-btn" type="button">Add to
                                                             cart</button>
                                                     </li>
-                                                    <li class="lnk wishlist"> <a class="add-to-cart"
-                                                            href="detail.html" title="Wishlist"> <i
-                                                                class="icon fa fa-heart"></i> </a> </li>
+                                                    <li class="lnk wishlist"> <a class="add-to-cart" href="detail.html"
+                                                            title="Wishlist"> <i class="icon fa fa-heart"></i> </a> </li>
                                                     <li class="lnk"> <a class="add-to-cart" href="detail.html"
                                                             title="Compare"> <i class="fa fa-signal"
                                                                 aria-hidden="true"></i> </a> </li>
@@ -1181,8 +1179,8 @@
                 <div class="col-md-4 col-sm-4">
                     <div class="wide-banner cnt-strip">
                         <div class="image"> <img class="img-responsive"
-                                src="{{ asset('FrontTemplate') }}/assets/images/banners/home-banner1.jpg"
-                                alt=""> </div>
+                                src="{{ asset('FrontTemplate') }}/assets/images/banners/home-banner1.jpg" alt="">
+                        </div>
                     </div>
                     <!-- /.wide-banner -->
                 </div>
@@ -1190,8 +1188,8 @@
                 <div class="col-md-4 col-sm-4">
                     <div class="wide-banner cnt-strip">
                         <div class="image"> <img class="img-responsive"
-                                src="{{ asset('FrontTemplate') }}/assets/images/banners/home-banner3.jpg"
-                                alt=""> </div>
+                                src="{{ asset('FrontTemplate') }}/assets/images/banners/home-banner3.jpg" alt="">
+                        </div>
                     </div>
                     <!-- /.wide-banner -->
                 </div>
@@ -1200,8 +1198,8 @@
                 <div class="col-md-4 col-sm-4">
                     <div class="wide-banner cnt-strip">
                         <div class="image"> <img class="img-responsive"
-                                src="{{ asset('FrontTemplate') }}/assets/images/banners/home-banner2.jpg"
-                                alt=""> </div>
+                                src="{{ asset('FrontTemplate') }}/assets/images/banners/home-banner2.jpg" alt="">
+                        </div>
                     </div>
                     <!-- /.wide-banner -->
                 </div>
@@ -1211,14 +1209,14 @@
         </div>
         <!-- /.wide-banners -->
 
-   
+
         <div class="wide-banners outer-bottom-xs">
             <div class="row">
                 <div class="col-md-8">
                     <div class="wide-banner1 cnt-strip">
                         <div class="image"> <img class="img-responsive"
-                                src="{{ asset('FrontTemplate') }}/assets/images/banners/home-banner.jpg"
-                                alt=""> </div>
+                                src="{{ asset('FrontTemplate') }}/assets/images/banners/home-banner.jpg" alt="">
+                        </div>
                         <div class="strip strip-text">
                             <div class="strip-inner">
                                 <h2 class="text-right">Amazing Sunglasses<br>
@@ -1237,8 +1235,8 @@
                 <div class="col-md-4">
                     <div class="wide-banner cnt-strip">
                         <div class="image"> <img class="img-responsive"
-                                src="{{ asset('FrontTemplate') }}/assets/images/banners/home-banner4.jpg"
-                                alt=""> </div>
+                                src="{{ asset('FrontTemplate') }}/assets/images/banners/home-banner4.jpg" alt="">
+                        </div>
 
 
                         <!-- /.new-label -->
@@ -1424,16 +1422,16 @@
                                 <div class="action">
                                     <ul class="list-unstyled">
                                         <li class="add-cart-button btn-group">
-                                            <button class="btn btn-primary icon" data-toggle="dropdown"
-                                                type="button"> <i class="fa fa-shopping-cart"></i>
+                                            <button class="btn btn-primary icon" data-toggle="dropdown" type="button">
+                                                <i class="fa fa-shopping-cart"></i>
                                             </button>
                                             <button class="btn btn-primary cart-btn" type="button">Add
                                                 to cart</button>
                                         </li>
                                         <li class="lnk wishlist"> <a class="add-to-cart" href="detail.html"
                                                 title="Wishlist"> <i class="icon fa fa-heart"></i> </a> </li>
-                                        <li class="lnk"> <a class="add-to-cart" href="detail.html"
-                                                title="Compare"> <i class="fa fa-signal" aria-hidden="true"></i> </a>
+                                        <li class="lnk"> <a class="add-to-cart" href="detail.html" title="Compare">
+                                                <i class="fa fa-signal" aria-hidden="true"></i> </a>
                                         </li>
                                     </ul>
                                 </div>
@@ -1481,8 +1479,8 @@
                                 <div class="action">
                                     <ul class="list-unstyled">
                                         <li class="add-cart-button btn-group">
-                                            <button class="btn btn-primary icon" data-toggle="dropdown"
-                                                type="button"> <i class="fa fa-shopping-cart"></i>
+                                            <button class="btn btn-primary icon" data-toggle="dropdown" type="button">
+                                                <i class="fa fa-shopping-cart"></i>
                                             </button>
                                             <button class="btn btn-primary cart-btn" type="button">Add
                                                 to cart</button>

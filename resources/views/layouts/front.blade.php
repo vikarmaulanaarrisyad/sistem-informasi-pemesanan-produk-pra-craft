@@ -34,22 +34,19 @@
         rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
 </head>
-
 <body class="cnt-home">
     <!-- ============================================== HEADER ============================================== -->
     <header class="header-style-1">
-
         <!-- ============================================== TOP MENU ============================================== -->
         <div class="top-bar animate-dropdown">
             <div class="container">
                 <div class="header-top-inner">
                     <div class="cnt-account">
                         <ul class="list-unstyled">
-                            <li class="myaccount"><a href="#"><span>My Account</span></a></li>
-                            <li class="wishlist"><a href="#"><span>Wishlist</span></a></li>
                             <li class="header_cart hidden-xs"><a href="#"><span>My Cart</span></a></li>
                             <li class="check"><a href="#"><span>Checkout</span></a></li>
-                            <li class="login"><a href="#"><span>Login</span></a></li>
+                            <li class="login"><a href="{{ route('login') }}"><span>Login</span></a></li>
+                            <li class="login"><a href="{{ route('register') }}"><span>Register</span></a></li>
                         </ul>
                     </div>
                     <!-- /.cnt-account -->
@@ -138,7 +135,7 @@
     <!-- /.info-boxes -->
     <!-- ============================================== INFO BOXES : END ============================================== -->
 
-    
+
     <!-- ============================================================= FOOTER ============================================================= -->
     <footer id="footer" class="footer color-bg">
         <div class="footer-bottom">

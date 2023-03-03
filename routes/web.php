@@ -38,7 +38,7 @@ use Illuminate\Support\Facades\Route;
 //     return view('auth.login');
 // });
 
-Route::get('/', [FrontController::class, 'index']);
+Route::get('/', [FrontController::class, 'index'])->name('homepage');
 
 
 
@@ -61,6 +61,10 @@ Route::group([
     // Halaman Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // Orders
+    Route::get('/orders/{id}/detail', [OrderController::class, 'detail'])->name('orders.detail');
+    Route::resource('/orders', OrderController::class)->except('edit', 'create');
+
 
     // Role Admin
     Route::group([
@@ -69,8 +73,7 @@ Route::group([
         Route::resource('/category', CategoryController::class)->except('edit', 'create');
         Route::resource('/product', ProductController::class)->except('edit', 'create');
         Route::resource('/pelanggan', PelangganController::class)->except('edit', 'create');
-        Route::get('/orders/{id}/detail', [OrderController::class, 'detail'])->name('orders.detail');
-        Route::resource('/orders', OrderController::class)->except('edit', 'create');
+
         Route::put('/orders/{id}/update_status', [OrderController::class, 'updateStatus'])->name('orders.update_status');
         Route::get('/orders/{id}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
         Route::get('/orders/{id}/print_invoice', [OrderController::class, 'printInvoice'])->name('orders.print_invoice');

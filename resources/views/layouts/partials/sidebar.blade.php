@@ -55,7 +55,8 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('product.index') }}" class="nav-link {{ request()->is('product*') ? 'active' : '' }}">
+                        <a href="{{ route('product.index') }}"
+                            class="nav-link {{ request()->is('product*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-folder"></i>
                             <p>
                                 Produk
@@ -63,16 +64,22 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('pelanggan.index') }}" class="nav-link {{ request()->is('pelanggan*') ? 'active' : '' }}">
+                        <a href="{{ route('pelanggan.index') }}"
+                            class="nav-link {{ request()->is('pelanggan*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-user-plus"></i>
                             <p>
                                 Pelanggan
                             </p>
                         </a>
                     </li>
+                @endif
+
+                @if (auth()->user()->hasRole('user') ||
+                        auth()->user()->hasRole('admin'))
                     <li class="nav-header">Transaksi</li>
                     <li class="nav-item">
-                        <a href="{{ route('orders.index') }}" class="nav-link {{ request()->is('orders*') ? 'active' : '' }}">
+                        <a href="{{ route('orders.index') }}"
+                            class="nav-link {{ request()->is('orders*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-shopping-cart"></i>
                             <p>
                                 Pesanan
@@ -88,6 +95,9 @@
                             </p>
                         </a>
                     </li>
+                @endif
+
+                @if (auth()->user()->hasRole('admin'))
                     <li class="nav-header">Report</li>
                     <li class="nav-item">
                         <a href="pages/widgets.html" class="nav-link">
@@ -106,16 +116,9 @@
                             </p>
                         </a>
                     </li>
-                @else
-                    <li class="nav-item">
-                        <a href="pages/widgets.html" class="nav-link">
-                            <i class="nav-icon fas fa-cogs"></i>
-                            <p>
-                                Pembelian Produk
-                            </p>
-                        </a>
-                    </li>
                 @endif
+
+
 
 
             </ul>

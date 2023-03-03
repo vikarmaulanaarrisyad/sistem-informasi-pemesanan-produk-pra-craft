@@ -79,18 +79,22 @@
                         @case('pending')
                             @if ($orders->user_id == auth()->id())
                                 <button class="btn btn-secondary float-left"
-                                    onclick="editForm('{{ route('orders.update_status', $orders->id) }}', 'canceled', 'Yakin ingin membatalkan pencairan terpilih?', 'secondary')">Batalkan</button>
+                                    onclick="editForm('{{ route('orders.update_status', $orders->id) }}', 'cancel', 'Yakin ingin membatalkan pencairan terpilih?', 'secondary')">Batalkan</button>
+
+                                <button class="btn btn-primary float-right"
+                                    onclick="editForm('{{ route('orders.update_status', $orders->id) }}', 'pending', 'Yakin ingin melanjutkan pesanan anda ?', 'success')">Bayar</button>
                             @endif
 
                             @if (auth()->user()->hasRole('admin'))
+                             <button class="btn btn-secondary float-left"
+                                    onclick="editForm('{{ route('orders.update_status', $orders->id) }}', 'cancel', 'Yakin ingin membatalkan pencairan terpilih?', 'secondary')">Batalkan</button>
+
                                 <button class="btn btn-success float-right ml-2"
-                                    onclick="editForm('{{ route('orders.update_status', $orders->id) }}', 'confirmed', 'Yakin ingin mengkonfirmasi pesanan terpilih?', 'success')">Konfirmasi</button>
-                                <button class="btn btn-danger float-right"
-                                    onclick="editForm('{{ route('orders.update_status', $orders->id) }}', 'not confirmed', 'Yakin ingin menolak pesanan terpilih?', 'danger')">Tolak</button>
+                                    onclick="editForm('{{ route('orders.update_status', $orders->id) }}', 'success', 'Yakin ingin mengkonfirmasi pesanan terpilih?', 'success')">Konfirmasi</button>
                             @endif
                         @break
 
-                        @case('canceled')
+                        @case('cancel')
                             <span class="text-{{ $orders->statusColor() }}">
                                 {{ ucfirst($orders->statusText()) }} oleh
                                 @if (auth()->id() == $orders->user_id)
@@ -101,9 +105,9 @@
                             </span>
                         @break
 
-                        @case('rejected')
+                        @case('alasan')
                             <span class="text-{{ $orders->statusColor() }}">
-                                {{ ucfirst($orders->statusText()) }} oleh Admin karena {{ $orders->reason_rejected }}
+                                {{ ucfirst($orders->statusText()) }} oleh Admin karena {{ $orders->alasan }}
                             </span>
                         @break
 
@@ -140,9 +144,9 @@
             <i class="fas fa-info-circle mr-1"></i> <span class="text-message"></span>
         </div>
 
-        <div class="form-group reason-rejected" style="display: none">
-            <label for="reason_rejected">Alasan</label>
-            <textarea name="reason_rejected" id="reason_rejected" rows="3" class="form-control"></textarea>
+        <div class="form-group alasan" style="display: none">
+            <label for="alasan">Alasan</label>
+            <textarea name="alasan" id="alasan" rows="3" class="form-control"></textarea>
         </div>
 
         <x-slot name="footer">
@@ -165,10 +169,10 @@
             $(`${modal} [name=status]`).val(status);
             $(`${modal} .text-message`).html(message);
             $(`${modal} .alert`).removeClass('alert-success alert-danger').addClass(`alert-${color}`);
-            if (status == 'not confirmed') {
-                $('.reason-rejected').show()
+            if (status == 'deny') {
+                $('.alasan').show()
             } else {
-                $('.reason-rejected').hide()
+                $('.alasan').hide()
             }
         }
 

@@ -29,6 +29,7 @@ class User extends Authenticatable
         'password',
         'telepon',
         'alamat',
+        'role_id'
     ];
 
     /**
@@ -68,7 +69,7 @@ class User extends Authenticatable
 
     public function hasRole($role)
     {
-        return $this->role->name = $role;
+        return $this->role->name == $role;
     }
 
     public function scopeUser($query)

@@ -88,30 +88,24 @@ class OrderController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'status' => 'required|in:confirmed,not confirmed,pending',
+            'status' => ['required', 'string'],
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $statusText = "";
-        if ($request->status == 'confirmed') {
-            $statusText = 'dikonfirmasi';
-        } elseif ($request->status == 'pending') {
-            $statusText = 'pending';
-        }
-
-        $orders = Order::findOrFail($id);
-        $orderDetails = OrderDetail::where('order_id', $orders->id)->get();
 
         $stokKurang = false;
         $subTotal = 0;
-
+        $orders = Order::findOrFail($id);
+        $orderDetails = OrderDetail::where('order_id', $orders->id)->get();
         foreach ($orderDetails as $item) {
             $product = Product::findOrFail($item->product_id);
-            if ($product->stok >= $item->jumlah) {
-                // $subTotal += $item->jumlah * $product->harga;
+            if ($orders->status == 'cancel') {
+                // Do nothing, skip the stock check and subtotal calculation
+            } elseif ($product->stok >= $item->jumlah) {
+                $subTotal += $item->jumlah * $product->harga;
             } else {
                 $stokKurang = true;
                 break;
@@ -128,7 +122,12 @@ class OrderController extends Controller
             $product = Product::findOrFail($item->product_id);
             $stokAwal = $product->stok;
 
-            if ($stokAwal >= $item->jumlah) {
+            if ($orders->status == 'cancel' || $stokAwal >= $item->jumlah) {
+                // Do nothing, skip the stock update and subtotal calculation
+            } else {
+                if ($orders->status != 'cancel') {
+                    $orders->total_harga = $subTotal;
+                }
                 $stokSekarang = $stokAwal - $item->jumlah;
                 $product->stok = $stokSekarang;
 
@@ -138,10 +137,60 @@ class OrderController extends Controller
             }
         }
 
-        $orders->total_harga = $subTotal;
-        $orders->status = 'confirmed';
+
+
+        $orders->status = $request->status;
         $orders->update();
 
-        return response()->json(['message' => 'Pesanan berhasil diproses']);
+
+        // $stokKurang = false;
+        // $subTotal = 0;
+        // $orders = Order::findOrFail($id);
+        // $orderDetails = OrderDetail::where('order_id', $orders->id)->get();
+        // foreach ($orderDetails as $item) {
+        //     $product = Product::findOrFail($item->product_id);
+        //     if ($product->stok >= $item->jumlah) {
+        //         // $subTotal += $item->jumlah * $product->harga;
+        //     } else {
+        //         $stokKurang = true;
+        //         break;
+        //     }
+        // }
+
+        // if ($stokKurang) {
+        //     $orders->status = 'pending';
+        //     $orders->save();
+        //     return response()->json(['message' => 'Stok produk kurang'], 422);
+        // }
+
+        // foreach ($orderDetails as $item) {
+        //     $product = Product::findOrFail($item->product_id);
+        //     $stokAwal = $product->stok;
+
+        //     if ($stokAwal >= $item->jumlah) {
+        //         $stokSekarang = $stokAwal - $item->jumlah;
+        //         $product->stok = $stokSekarang;
+
+        //         $subTotal += $item->jumlah * $product->harga;
+
+        //         $product->update();
+        //     }
+        // }
+
+        // $orders->total_harga = $subTotal;
+        // $orders->status = $request->status;
+        // $orders->update();
+
+
+        $statusText = "";
+        if ($request->status == 'success') {
+            $statusText = 'dikonfirmasi';
+        } elseif ($request->status == 'pending') {
+            $statusText = 'pending';
+        } elseif ($request->status == 'cancel') {
+            $statusText = 'dibatalkan';
+        }
+
+        return response()->json(['message' => 'Pesanan berhasil ' . $statusText]);
     }
 }
