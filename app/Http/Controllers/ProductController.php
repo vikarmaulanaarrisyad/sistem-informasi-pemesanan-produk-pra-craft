@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Models\Product;
+use App\Models\Category;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -62,6 +63,7 @@ class ProductController extends Controller
             'harga' => str_replace('.', '', $request->harga),
             'stok' => $request->stok,
             'gambar' => upload('product', $fileImage, 'product'),
+            'slug' => Str::slug($request->nama_produk)
         ];
 
         $product = new Product();
@@ -70,6 +72,7 @@ class ProductController extends Controller
         $product->harga = $data['harga'];
         $product->stok = $data['stok'];
         $product->gambar = $data['gambar'];
+        $product->slug = $data['slug'];
         $product->save();
 
         $product->category_product()->attach($request->categories);
@@ -126,6 +129,7 @@ class ProductController extends Controller
             'deskripsi' => $request->deskripsi,
             'harga' => str_replace('.', '', $request->harga),
             'stok' => $request->stok,
+            'slug' => Str::slug($request->nama_produk)
         ];
 
         if ($request->hasFile('gambar')) {

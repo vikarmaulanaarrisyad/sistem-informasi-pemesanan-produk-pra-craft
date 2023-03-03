@@ -16,7 +16,7 @@ class FrontController extends Controller
         $categories  = Category::all();
         // $order = Order::all();
         // $orderDetail = OrderDetail::where('order_id', $order->id)->get();
-        $products = Product::where('stok', '>', 1)->get();
+        $products = Product::where('stok', '!=', 0)->get();
 
         return view('frontend.homepage.index', compact('categories', 'products'));
     }
