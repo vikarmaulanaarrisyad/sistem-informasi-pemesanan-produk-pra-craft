@@ -18,8 +18,8 @@
                         <th>Email</th>
                         <th>Alamat</th>
                         <th>Telepon</th>
-                        <th>Gambar</th>
-                        <th>Aksi</th>
+                        <th>Status</th>
+                        <th>Created At</th>
                     </x-slot>
                 </x-table>
             </x-card>
@@ -64,12 +64,10 @@
                     data: 'telepon'
                 },
                 {
-                    data: 'gambar'
+                    data: 'status'
                 },
                 {
-                    data: 'aksi',
-                    sortable: false,
-                    searchable: false
+                    data: 'created_at'
                 },
             ]
         });

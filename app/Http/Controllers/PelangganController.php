@@ -13,10 +13,11 @@ class PelangganController extends Controller
 
         return datatables($user)
             ->addIndexColumn()
-            ->addColumn('aksi', function ($user) {
-                return '
-                <button onclick="editForm(`' . route('pelanggan.show', $user->id) . '`)" class="btn btn-success btn-sm"><i class="fas fa-eye"></i> Lihat Detail</button>
-                ';
+            ->addColumn('created_at', function ($user) {
+                return tanggal_indonesia($user->created_at);
+            })
+            ->addColumn('status', function ($user) {
+            return '<span class="badge 2xl badge-' . $user->statusColor() . '">' . $user->statusText() . '</span>';
             })
             ->escapeColumns([])
             ->make(true);

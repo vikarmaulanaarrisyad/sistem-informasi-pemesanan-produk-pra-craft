@@ -86,15 +86,6 @@
                             </p>
                         </a>
                     </li>
-
-                    <li class="nav-item">
-                        <a href="pages/widgets.html" class="nav-link">
-                            <i class="nav-icon fas fa-motorcycle"></i>
-                            <p>
-                                Pengiriman
-                            </p>
-                        </a>
-                    </li>
                 @endif
 
                 @if (auth()->user()->hasRole('admin'))
@@ -117,9 +108,6 @@
                         </a>
                     </li>
                 @endif
-
-
-
 
             </ul>
         </nav>
