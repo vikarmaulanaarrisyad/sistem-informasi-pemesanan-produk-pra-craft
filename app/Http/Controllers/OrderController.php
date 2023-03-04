@@ -11,12 +11,24 @@ use Illuminate\Support\Facades\Validator;
 class OrderController extends Controller
 {
 
-    public function getDataOrder()
+    public function getDataOrder(Request $request)
     {
-        $orders = Order::with('user')
-            ->when(auth()->user()->hasRole('user'), function ($query) {
+        $orders = Order::when(auth()->user()->hasRole('user'), function ($query) {
                 $query->user();
-            })->orderBy('created_at');
+            })
+            ->when($request->has('status') && $request->status != "", function ($query) use ($request) {
+                $query->where('status', $request->status);
+            })
+            ->when(
+                $request->has('start_date') &&
+                    $request->start_date != "" &&
+                    $request->has('end_date') &&
+                    $request->end_date != "",
+                function ($query) use ($request) {
+                    $query->whereBetween('tgl_pesanan', $request->only('start_date', 'end_date'));
+                }
+            )
+            ->orderBy('created_at','asc');
 
         return datatables($orders)
             ->addIndexColumn()

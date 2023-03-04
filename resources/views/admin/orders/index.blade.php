@@ -11,6 +11,45 @@
     <div class="row">
         <div class="col-md-12">
             <x-card>
+
+                <div class="d-flex justify-content-between">
+                    <div class="form-group">
+                        <label for="status2">Status</label>
+                        <select name="status2" id="status2" class="custom-select">
+                            <option value="" selected>Semua</option>
+                            <option value="success" {{ request('status') == 'success' ? 'selected' : '' }}>Konfirmasi
+                            </option>
+                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                            <option value="cancel" {{ request('status') == 'cancel' ? 'selected' : '' }}>Dibatalkan
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="d-flex">
+                        <div class="form-group mx-3">
+                            <label for="start_date2">Tanggal Awal</label>
+                            <div class="input-group datepicker" id="start_date2" data-target-input="nearest">
+                                <input type="text" name="start_date2" class="form-control datetimepicker-input"
+                                    data-target="#start_date2" />
+                                <div class="input-group-append" data-target="#start_date2" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="end_date2">Tanggal Akhir</label>
+                            <div class="input-group datepicker" id="end_date2" data-target-input="nearest">
+                                <input type="text" name="end_date2" class="form-control datetimepicker-input"
+                                    data-target="#end_date2" />
+                                <div class="input-group-append" data-target="#end_date2" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
                 <x-table class="tabel-categories">
                     <x-slot name="thead">
                         <th>No</th>
@@ -29,6 +68,7 @@
 @include('layouts.includes.datatables')
 @include('layouts.includes.summernote')
 @include('layouts.includes.select2')
+@include('layouts.includes.datepicker')
 
 @push('scripts')
     <script>
@@ -40,7 +80,12 @@
             processing: true,
             autoWidth: false,
             ajax: {
-                url: '{{ route('data.order') }}'
+                url: '{{ route('data.order') }}',
+                data: function(d) {
+                    d.status = $('[name=status2]').val();
+                    d.start_date = $('[name=start_date2]').val();
+                    d.end_date = $('[name=end_date2]').val();
+                }
             },
             columns: [{
                     data: 'DT_RowIndex',
@@ -62,6 +107,13 @@
                     searchable: false
                 },
             ]
+        });
+
+        $('[name=status2]').on('change', function() {
+            table.ajax.reload();
+        });
+        $('.datepicker').on('change.datetimepicker', function() {
+            table.ajax.reload();
         });
 
         function addForm(url, title = 'Tambah Produk') {

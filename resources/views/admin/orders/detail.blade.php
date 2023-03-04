@@ -39,6 +39,11 @@
                                     {{ date('d-m-Y H:i', strtotime($orders->updated_at)) }}
                                 @endif
 
+                                @if ($orders->status == 'cancel')
+                                    Pesanan dibatalkan
+                                    {{ date('d-m-Y H:i', strtotime($orders->updated_at)) }}
+                                @endif
+
                                 @if ($orders->status == 'pending')
                                     @if (auth()->user()->hasRole('admin'))
                                         Sedang dalam proses approval oleh Anda
