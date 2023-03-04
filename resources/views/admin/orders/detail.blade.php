@@ -34,18 +34,24 @@
                         </li>
                         <li class="list-group-item">
                             <b>Status pesanan anda </b> <a class="float-right">
-                                @if ($orders->status == 'confirmed')
-                                    Sedang dalam proses pengiriman
+                                @if ($orders->status == 'success')
+                                    Berhasil Dikonfirmasi pada tanggal
+                                    {{ date('d-m-Y H:i', strtotime($orders->updated_at)) }}
                                 @endif
 
                                 @if ($orders->status == 'pending')
-                                    Sedang dalam proses packing
+                                    @if (auth()->user()->hasRole('admin'))
+                                        Sedang dalam proses approval oleh Anda
+                                    @else
+                                        Sedang dalam proses approval oleh Admin
+                                    @endif
                                 @endif
                             </a>
                         </li>
                     </ul>
-                    @if ($orders->status == 'confirmed')
-                        <a href="{{ route('orders.invoice', $orders->id) }}" class="btn btn-success btn-block"><b>Buat
+                    @if ($orders->status == 'success')
+                        <a href="{{ route('orders.invoice', $orders->id) }}" class="btn btn-success btn-block"><b><i
+                                    class="fas fa-print"></i> Cetak
                                 Invoice</b></a>
                     @endif
                 </div>
@@ -86,8 +92,8 @@
                             @endif
 
                             @if (auth()->user()->hasRole('admin'))
-                             <button class="btn btn-secondary float-left"
-                                    onclick="editForm('{{ route('orders.update_status', $orders->id) }}', 'cancel', 'Yakin ingin membatalkan pencairan terpilih?', 'secondary')">Batalkan</button>
+                                <button class="btn btn-secondary float-left"
+                                    onclick="editForm('{{ route('orders.update_status', $orders->id) }}', 'cancel', 'Yakin ingin membatalkan pesanan terpilih?', 'secondary')">Batalkan</button>
 
                                 <button class="btn btn-success float-right ml-2"
                                     onclick="editForm('{{ route('orders.update_status', $orders->id) }}', 'success', 'Yakin ingin mengkonfirmasi pesanan terpilih?', 'success')">Konfirmasi</button>
@@ -112,9 +118,15 @@
                         @break
 
                         @case('success')
-                            <span class="text-{{ $orders->statusColor() }}">
-                                Berhasil {{ ucfirst($orders->statusText()) }} oleh Admin
-                            </span>
+                            @if (auth()->user()->hasRole('admin'))
+                                <span class="text-{{ $orders->statusColor() }}">
+                                    Berhasil {{ ucfirst($orders->statusText()) }} oleh Anda
+                                </span>
+                            @else
+                                <span class="text-{{ $orders->statusColor() }}">
+                                    Berhasil {{ ucfirst($orders->statusText()) }} oleh Admin
+                                </span>
+                            @endif
                         @break
 
                         @default
@@ -124,14 +136,14 @@
         </div>
 
     </div>
-    <div class="row">
+    {{-- <div class="row">
         <div class="col-md-6">
             <x-card>
 
             </x-card>
         </div>
 
-    </div>
+    </div> --}}
 
     <x-modal size="modal-md">
         <x-slot name="title">Form Konfirmasi</x-slot>

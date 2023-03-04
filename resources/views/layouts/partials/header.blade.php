@@ -98,6 +98,33 @@
             </div>
         </li>
 
+        {{-- <li class="nav-item dropdown user-menu">
+            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                <img src="https://ppdb.mtsn1tegal.sch.id/storage/img/user/VWe5DffhwuE6P9PKA6MiDG3y9OzYVlYmbuRZDBo8.jpg"
+                    class="user-image img-circle elevation-1" alt="NIRINA AIDA SAFIRA">
+            </a>
+            <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
+
+                <li class="user-header bg-success">
+                    <img src="https://ppdb.mtsn1tegal.sch.id/storage/img/user/VWe5DffhwuE6P9PKA6MiDG3y9OzYVlYmbuRZDBo8.jpg"
+                        class="img-circle elevation-2" alt="NIRINA AIDA SAFIRA">
+                    <p>
+                        NIRINA AIDA SAFIRA - User
+                        <small>Terdaftar pada 02 Mar 2023</small>
+                    </p>
+                </li>
+
+                <li class="user-footer">
+                    <form action="https://ppdb.mtsn1tegal.sch.id/keluar" method="POST">
+                        <input type="hidden" name="_token" value="9MQbge8uEKf3TEU5vVSRJRX0JFiBsoPHsqEZJY4a">
+                        <a href="https://ppdb.mtsn1tegal.sch.id/siswa/46944d22-0832-45d7-997c-f222465113d6"
+                            class="btn btn-default btn-flat">My Account</a>
+                        <button type="submit" class="btn btn-default btn-flat float-right">Keluar</button>
+                    </form>
+                </li>
+            </ul>
+        </li> --}}
+
         <li class="nav-item">
             <a class="nav-link" href="#" onclick="document.querySelector('#form-logout').submit()">
                 <i class="fas fa-sign-out-alt"></i> Keluar

@@ -40,7 +40,7 @@
             processing: true,
             autoWidth: false,
             ajax: {
-                url: '{{ route('api.data.order') }}'
+                url: '{{ route('data.order') }}'
             },
             columns: [{
                     data: 'DT_RowIndex',

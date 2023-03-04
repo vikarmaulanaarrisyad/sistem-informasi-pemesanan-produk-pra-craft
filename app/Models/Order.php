@@ -14,22 +14,28 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function scopeUser($query)
+    {
+        return $query->where('user_id', auth()->id());
+    }
+
+
     public function statusColor()
     {
         $color = '';
 
         switch ($this->status) {
-            case 'confirmed':
+            case 'success':
                 $color = 'success';
                 break;
-            case 'not confirmed':
-                $color = 'dark';
+            case 'deny':
+                $color = 'danger';
                 break;
             case 'pending':
                 $color = 'warning';
                 break;
-            case 'canceled':
-                $color = 'danger';
+            case 'cancel':
+                $color = 'dark';
                 break;
             default:
                 break;
@@ -42,16 +48,16 @@ class Order extends Model
         $text = '';
 
         switch ($this->status) {
-            case 'confirmed':
+            case 'success':
                 $text = 'Dikonfirmasi';
                 break;
-            case 'not confirmed':
-                $text = 'Tidak Dikonfirmasi';
+            case 'deny':
+                $text = 'Ditolak';
                 break;
             case 'pending':
                 $text = 'Menunggu';
                 break;
-            case 'canceled':
+            case 'cancel':
                 $text = 'Dibatalkan';
                 break;
             default:

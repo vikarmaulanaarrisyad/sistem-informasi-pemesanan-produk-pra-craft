@@ -46,7 +46,7 @@
             processing: true,
             autoWidth: false,
             ajax: {
-                url: '{{ route('api.data.product') }}'
+                url: '{{ route('data.product') }}'
             },
             columns: [{
                     data: 'DT_RowIndex',
@@ -107,7 +107,7 @@
                     response.data.categories.forEach(item => {
                         selectedCategories.push(item.id);
                     });
-                    
+
                     $('#categories')
                         .val(selectedCategories)
                         .trigger('change');
@@ -230,7 +230,7 @@
             $('#categories').select2({
                 placeholder: 'Pilih Kategori',
                 ajax: {
-                    url: "{{ route('api.search.category') }}",
+                    url: "{{ route('search.category') }}",
                     type: 'get',
                     dataType: 'json',
                     delay: 200,

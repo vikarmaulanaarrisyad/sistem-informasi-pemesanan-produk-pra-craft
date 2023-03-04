@@ -10,6 +10,34 @@ use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
+
+    public function getDataOrder()
+    {
+        $orders = Order::with('user')
+            ->when(auth()->user()->hasRole('user'), function ($query) {
+                $query->user();
+            })->orderBy('created_at');
+
+        return datatables($orders)
+            ->addIndexColumn()
+            ->addColumn('nama', function ($orders) {
+                return $orders->user->name;
+            })
+            ->addColumn('tanggal', function ($orders) {
+                return tanggal_indonesia($orders->tgl_pesanan);
+            })
+            ->addColumn('status', function ($orders) {
+                return '<span class="badge 2xl badge-' . $orders->statusColor() . '">' . $orders->statusText() . '</span>';
+            })
+            ->addColumn('aksi', function ($orders) {
+                return '
+                <a href="' . route('orders.detail', $orders->id) . '" class="btn btn-success btn-sm"><i class="fas fa-eye"></i> Lihat Detail</a>
+                ';
+            })
+            ->escapeColumns([])
+            ->make(true);
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -58,7 +86,11 @@ class OrderController extends Controller
      */
     public function detail($id)
     {
-        $orders = Order::findOrfail($id);
+        $orders = Order::with('user')->findOrfail($id);
+        if ($orders->user_id != auth()->id() && auth()->user()->hasRole('user')) {
+            abort(404);
+        }
+
         $orderDetail = OrderDetail::where('order_id', $orders->id)->get();
         $subTotal = 0;
         foreach ($orderDetail as $item) {
@@ -95,92 +127,35 @@ class OrderController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
+        $order = Order::findOrfail($id);
+        $orderDetail = OrderDetail::with('product')->where('order_id', $order->id)->get();
 
-        $stokKurang = false;
-        $subTotal = 0;
-        $orders = Order::findOrFail($id);
-        $orderDetails = OrderDetail::where('order_id', $orders->id)->get();
-        foreach ($orderDetails as $item) {
-            $product = Product::findOrFail($item->product_id);
-            if ($orders->status == 'cancel') {
-                // Do nothing, skip the stock check and subtotal calculation
-            } elseif ($product->stok >= $item->jumlah) {
-                $subTotal += $item->jumlah * $product->harga;
-            } else {
-                $stokKurang = true;
-                break;
-            }
-        }
+        // cek request status adalah succes
+        if ($request->status == 'success') {
+            foreach ($orderDetail as $item) {
+                $product = Product::findOrfail($item->product_id);
+                if ($product->stok >= $item->jumlah) {
+                    // return 'lebih';
+                    // Jika stok lebih dari 0 maka bisa dihitung dengan item dalam produk
 
-        if ($stokKurang) {
-            $orders->status = 'pending';
-            $orders->save();
-            return response()->json(['message' => 'Stok produk kurang'], 422);
-        }
+                    $product->stok -= $item->jumlah;
+                    $product->save();
 
-        foreach ($orderDetails as $item) {
-            $product = Product::findOrFail($item->product_id);
-            $stokAwal = $product->stok;
-
-            if ($orders->status == 'cancel' || $stokAwal >= $item->jumlah) {
-                // Do nothing, skip the stock update and subtotal calculation
-            } else {
-                if ($orders->status != 'cancel') {
-                    $orders->total_harga = $subTotal;
+                    $order->total_harga += $item->jumlah * $product->harga;
+                    $order->status = 'success';
+                    $order->save();
+                } else {
+                    // return 'kurang';
+                    // Jika stok kurang dari 1
+                    return response()->json(['message' => 'Stok produk kurang dari 1'], 422);
                 }
-                $stokSekarang = $stokAwal - $item->jumlah;
-                $product->stok = $stokSekarang;
-
-                $subTotal += $item->jumlah * $product->harga;
-
-                $product->update();
             }
+        } else {
+            // return 'cancel';
+            $order->status = 'cancel';
+            $order->save();
+            return response()->json(['message' => 'Pesanan berhasil dibatalkan']);
         }
-
-
-
-        $orders->status = $request->status;
-        $orders->update();
-
-
-        // $stokKurang = false;
-        // $subTotal = 0;
-        // $orders = Order::findOrFail($id);
-        // $orderDetails = OrderDetail::where('order_id', $orders->id)->get();
-        // foreach ($orderDetails as $item) {
-        //     $product = Product::findOrFail($item->product_id);
-        //     if ($product->stok >= $item->jumlah) {
-        //         // $subTotal += $item->jumlah * $product->harga;
-        //     } else {
-        //         $stokKurang = true;
-        //         break;
-        //     }
-        // }
-
-        // if ($stokKurang) {
-        //     $orders->status = 'pending';
-        //     $orders->save();
-        //     return response()->json(['message' => 'Stok produk kurang'], 422);
-        // }
-
-        // foreach ($orderDetails as $item) {
-        //     $product = Product::findOrFail($item->product_id);
-        //     $stokAwal = $product->stok;
-
-        //     if ($stokAwal >= $item->jumlah) {
-        //         $stokSekarang = $stokAwal - $item->jumlah;
-        //         $product->stok = $stokSekarang;
-
-        //         $subTotal += $item->jumlah * $product->harga;
-
-        //         $product->update();
-        //     }
-        // }
-
-        // $orders->total_harga = $subTotal;
-        // $orders->status = $request->status;
-        // $orders->update();
-
 
         $statusText = "";
         if ($request->status == 'success') {

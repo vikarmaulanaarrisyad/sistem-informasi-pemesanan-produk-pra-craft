@@ -44,7 +44,7 @@
             processing: true,
             autoWidth: false,
             ajax: {
-                url: '{{ route('api.data.pelanggan') }}'
+                url: '{{ route('data.pelanggan') }}'
             },
             columns: [{
                     data: 'DT_RowIndex',

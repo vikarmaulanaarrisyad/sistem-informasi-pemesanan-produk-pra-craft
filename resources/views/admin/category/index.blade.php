@@ -44,7 +44,7 @@
             processing: true,
             autoWidth: false,
             ajax: {
-                url: '{{ route('api.data.category') }}'
+                url: '{{ route('data.category') }}'
             },
             columns: [{
                     data: 'DT_RowIndex',

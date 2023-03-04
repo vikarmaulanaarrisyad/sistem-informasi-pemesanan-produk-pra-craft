@@ -32,4 +32,3 @@ Route::get('/categories/search', [ApiProductController::class, 'getCategoryProdu
 Route::get('/pelanggan/data', [ApiPelangganController::class, 'getDataPelanggan'])->name('api.data.pelanggan');
 
 Route::get('/orders/data', [ApiOrderController::class, 'getDataOrder'])->name('api.data.order');
-

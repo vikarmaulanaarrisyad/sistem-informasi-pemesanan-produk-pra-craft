@@ -60,23 +60,32 @@ Route::group([
 ], function () {
     // Halaman Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-    // Orders
+    // Route Product
+    Route::get('/product/data', [ProductController::class, 'getDataProduct'])->name('data.product');
+    Route::resource('/product', ProductController::class)->except('edit', 'create');
+    // Route Order / Pesanan
+    Route::get('/orders/data', [OrderController::class, 'getDataOrder'])->name('data.order');
     Route::get('/orders/{id}/detail', [OrderController::class, 'detail'])->name('orders.detail');
+    Route::get('/orders/{id}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
+    Route::get('/orders/{id}/print_invoice', [OrderController::class, 'printInvoice'])->name('orders.print_invoice');
     Route::resource('/orders', OrderController::class)->except('edit', 'create');
-
+    Route::put('/orders/{id}/update_status', [OrderController::class, 'updateStatus'])->name('orders.update_status');
+    //
 
     // Role Admin
     Route::group([
         'middleware' => 'role:admin'
     ], function () {
+        // Route Category
+        Route::get('/categories/data', [CategoryController::class, 'getDataCategory'])->name('data.category');
         Route::resource('/category', CategoryController::class)->except('edit', 'create');
-        Route::resource('/product', ProductController::class)->except('edit', 'create');
-        Route::resource('/pelanggan', PelangganController::class)->except('edit', 'create');
+        // Route Product
+        Route::get('/categories/search', [ProductController::class, 'getCategoryProduct'])->name('search.category');
 
-        Route::put('/orders/{id}/update_status', [OrderController::class, 'updateStatus'])->name('orders.update_status');
-        Route::get('/orders/{id}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
-        Route::get('/orders/{id}/print_invoice', [OrderController::class, 'printInvoice'])->name('orders.print_invoice');
+
+        // Route Product
+        Route::get('/pelanggan/data', [PelangganController::class, 'getDataPelanggan'])->name('data.pelanggan');
+        Route::resource('/pelanggan', PelangganController::class)->except('edit', 'create');
     });
 
     // Role Users
