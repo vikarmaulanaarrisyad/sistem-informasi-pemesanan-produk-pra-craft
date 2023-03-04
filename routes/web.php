@@ -6,6 +6,7 @@ use App\Http\Controllers\{
     OrderController,
     ProductController,
     PelangganController,
+    ReportController,
 };
 use App\Http\Controllers\Front\FrontController;
 use Illuminate\Support\Facades\Route;
@@ -82,10 +83,13 @@ Route::group([
         // Route Product
         Route::get('/categories/search', [ProductController::class, 'getCategoryProduct'])->name('search.category');
 
-
         // Route Product
         Route::get('/pelanggan/data', [PelangganController::class, 'getDataPelanggan'])->name('data.pelanggan');
         Route::resource('/pelanggan', PelangganController::class)->except('edit', 'create');
+
+        // Report : Laporan
+        Route::get('/report', [ReportController::class, 'index'])->name('report.index');
+        Route::get('/report/data/{start}/{end}', [ReportController::class, 'data'])->name('report.data');
     });
 
     // Role Users

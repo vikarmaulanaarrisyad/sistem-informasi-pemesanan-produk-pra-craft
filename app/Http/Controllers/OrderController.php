@@ -14,8 +14,8 @@ class OrderController extends Controller
     public function getDataOrder(Request $request)
     {
         $orders = Order::when(auth()->user()->hasRole('user'), function ($query) {
-                $query->user();
-            })
+            $query->user();
+        })
             ->when($request->has('status') && $request->status != "", function ($query) use ($request) {
                 $query->where('status', $request->status);
             })
@@ -28,7 +28,7 @@ class OrderController extends Controller
                     $query->whereBetween('tgl_pesanan', $request->only('start_date', 'end_date'));
                 }
             )
-            ->orderBy('created_at','asc');
+            ->orderBy('created_at', 'asc');
 
         return datatables($orders)
             ->addIndexColumn()
@@ -150,12 +150,17 @@ class OrderController extends Controller
                     // return 'lebih';
                     // Jika stok lebih dari 0 maka bisa dihitung dengan item dalam produk
 
+                    $item->jml_stok = $product->stok - $item->jumlah;
+
                     $product->stok -= $item->jumlah;
                     $product->save();
 
                     $order->total_harga += $item->jumlah * $product->harga;
+                    $order->stok_skrng = 0;
                     $order->status = 'success';
                     $order->save();
+
+                    $item->save();
                 } else {
                     // return 'kurang';
                     // Jika stok kurang dari 1

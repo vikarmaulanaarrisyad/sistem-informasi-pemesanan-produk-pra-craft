@@ -91,7 +91,7 @@
                 @if (auth()->user()->hasRole('admin'))
                     <li class="nav-header">Report</li>
                     <li class="nav-item">
-                        <a href="pages/widgets.html" class="nav-link">
+                        <a href="{{ route('report.index') }}" class="nav-link {{ request()->is('report*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-file-pdf"></i>
                             <p>
                                 Laporan
