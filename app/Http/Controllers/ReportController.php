@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
 class ReportController extends Controller
 {
@@ -28,47 +29,46 @@ class ReportController extends Controller
         $i = 1;
         $stok_keluar = 0;
 
-        $starDate = date('Y-m-d', strtotime($start)); // ganti $date dengan tanggal yang ingin ditampilkan
-        $endDate = date('Y-m-d', strtotime($end)); // ganti $date dengan tanggal yang ingin ditampilkan
+        $starDate = date('Y-m-d', strtotime($start));
+        $endDate = date('Y-m-d', strtotime($end));
 
-        $order = Order::where('status', 'success')
+        $orders = Order::where('status', 'success')
             ->whereDate('tgl_pesanan', '>=', $starDate)
             ->whereDate('tgl_pesanan', '<=', $endDate)
             ->get();
 
-        if ($order) {
-            foreach ($order as $value) {
-                $orderDetails = OrderDetail::where('order_id', $value->id)
-                    ->first();
-                $products = Product::where('id', $orderDetails->product_id)
-                    ->first();
+        if ($orders) {
+            foreach ($orders as $order) {
+                foreach ($order->orderDetails  as $orderDetail) {
+                    $products = Product::findOrfail($orderDetail->product_id);
 
-                $stok_keluar += $orderDetails->jumlah;
+                    $row = [];
+                    $row['DT_RowIndex'] = $i++;
+                    $row['tanggal'] = tanggal_indonesia($order->tgl_pesanan);
+                    $row['product'] = $products->nama_produk;
+                    $row['stok'] = $orderDetail->jml_stok;
+                    $row['harga'] = format_uang($products->harga);
+                    $row['qty'] = $orderDetail->jumlah;
+                    $row['subtotal'] = format_uang($products->harga * $orderDetail->jumlah);
 
-                $row = [];
-                $row['DT_RowIndex'] = $i++;
-                $row['tanggal'] = tanggal_indonesia($value->tgl_pesanan);
-                $row['product'] = $products->nama_produk;
-                $row['stok'] = $products->stok;
-                $row['harga'] = format_uang($products->harga);
-                $row['qty'] = $orderDetails->jumlah;
-                $row['subtotal'] = format_uang($value->total_harga);
+                    array_push($data, $row);
+                }
 
-                array_push($data, $row);
+                // Add the total order price row
+                $data[] = [
+                    'DT_RowIndex' => '',
+                    'tanggal' => '',
+                    'product' => '',
+                    'stok' => '',
+                    'harga' => '',
+                    'qty' => '',
+                    'subtotal' => '',
+                    'total' => format_uang($order->whereDate('tgl_pesanan', '>=', $starDate)->whereDate('tgl_pesanan', '<=', $endDate)->sum('total_harga')),
+                ];
             }
         } else {
             // handle case when no orders found for this date
         }
-
-        $data[] = [
-            'DT_RowIndex' => '',
-            'tanggal' => '',
-            'product' => '',
-            'stok' => '',
-            'harga' => '',
-            'qty' => '',
-            'subtotal' => '',
-        ];
 
         return $data;
     }
@@ -80,5 +80,13 @@ class ReportController extends Controller
         return datatables($data)
             ->escapeColumns([])
             ->make(true);
+    }
+
+    public function exportPDF($start, $end)
+    {
+        $data = $this->getData($start, $end);
+        $pdf = PDF::loadView('admin.report.pdf', compact('start', 'end', 'data'));
+
+        return $pdf->stream('Laporan-transaksi-' . date('Y-m-d-his') . '.pdf');
     }
 }

@@ -70,18 +70,20 @@
                         <th>Nama Produk</th>
                         <th>Jumlah Beli</th>
                         <th>Harga</th>
+                        <th>Jumlah Bayar</th>
                     </x-slot>
                     @foreach ($orderDetail as $item)
                         <tr>
                             <td width="10%">{{ $loop->iteration }}</td>
                             <td>{{ $item->product->nama_produk }}</td>
                             <td>{{ $item->jumlah }}</td>
-                            <td>{{ format_uang($item->product->harga) }}</td>
+                            <td class="text-right">{{ format_uang($item->product->harga) }}</td>
+                            <td class="text-right">{{ format_uang($item->product->harga * $item->jumlah) }}</td>
                         </tr>
                     @endforeach
                     <tr>
-                        <td colspan="3" class="text-center text-bold">Jumlah</td>
-                        <td>{{ format_uang($subTotal) }}</td>
+                        <td colspan="4" class="text-right text-bold">TOTAL Bayar</td>
+                        <td class="text-right text-bold">{{ format_uang($subTotal) }}</td>
                     </tr>
                 </x-table>
 

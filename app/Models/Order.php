@@ -19,6 +19,11 @@ class Order extends Model
         return $query->where('user_id', auth()->id());
     }
 
+    public function orderDetails()
+    {
+        return $this->hasMany(OrderDetail::class);
+    }
+
 
     public function statusColor()
     {
