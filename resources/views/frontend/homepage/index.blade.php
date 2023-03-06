@@ -38,7 +38,7 @@
                                         <div class="product">
                                             <div class="product-image">
                                                 <div class="image">
-                                                    <a href="detail.html">
+                                                    <a href="{{ route('produk.show', $item->slug) }}">
                                                         <img src="{{ Storage::url($item->gambar) }}" alt="">
                                                         <img src="{{ Storage::url($item->gambar) }}" alt=""
                                                             class="hover-image">
@@ -58,7 +58,7 @@
                                                 <div class="description"></div>
                                                 <div class="product-price"> <span class="price">Rp.
                                                         {{ format_uang($item->harga) }}
-                                                    </span> <span class="price-before-discount">$ 800</span>
+                                                        {{-- </span> <span class="price-before-discount">$ 800</span> --}}
                                                 </div>
                                                 <!-- /.product-price -->
 
@@ -1487,8 +1487,8 @@
                                         </li>
                                         <li class="lnk wishlist"> <a class="add-to-cart" href="detail.html"
                                                 title="Wishlist"> <i class="icon fa fa-heart"></i> </a> </li>
-                                        <li class="lnk"> <a class="add-to-cart" href="detail.html"
-                                                title="Compare"> <i class="fa fa-signal" aria-hidden="true"></i> </a>
+                                        <li class="lnk"> <a class="add-to-cart" href="detail.html" title="Compare">
+                                                <i class="fa fa-signal" aria-hidden="true"></i> </a>
                                         </li>
                                     </ul>
                                 </div>

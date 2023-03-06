@@ -13,6 +13,7 @@
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="{{ asset('FrontTemplate') }}/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ asset('/Templates/plugins/sweetalert2/sweetalert2.min.css') }}">
 
     <!-- Customizable CSS -->
     <link rel="stylesheet" href="{{ asset('FrontTemplate') }}/assets/css/main.css">
@@ -33,7 +34,12 @@
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,400italic,600,600italic,700,700italic,800'
         rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+    {{-- SweetAlert2 --}}
+    @stack('css_vendor')
+
+    @stack('css')
 </head>
+
 <body class="cnt-home">
     <!-- ============================================== HEADER ============================================== -->
     <header class="header-style-1">
@@ -44,7 +50,7 @@
                     <div class="cnt-account">
                         <ul class="list-unstyled">
                             <li class="header_cart hidden-xs"><a href="#"><span>My Cart</span></a></li>
-                            <li class="check"><a href="#"><span>Checkout</span></a></li>
+                            <li class="check"><a href="{{ route('orders.show_cart', $order->id) }}"><span>Checkout</span></a></li>
                             <li class="login"><a href="{{ route('login') }}"><span>Login</span></a></li>
                             <li class="login"><a href="{{ route('register') }}"><span>Register</span></a></li>
                         </ul>
@@ -85,7 +91,23 @@
     </header>
 
     <!-- ============================================== HEADER : END ============================================== -->
+    <div class="breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-inner">
+                <ul class="list-inline list-unstyled">
+                    @section('breadcrumb')
+
+                        <li><a href="{{ route('homepage') }}">Home</a></li>
+                    @show
+                    {{-- <li><a href="#">Clothing</a></li>
+                    <li class="active">Floral Print Buttoned</li> --}}
+                </ul>
+            </div><!-- /.breadcrumb-inner -->
+        </div><!-- /.container -->
+    </div>
+
     <div class="body-content outer-top-vs" id="top-banner-and-menu">
+
         <div class="container">
             <div class="class="col-xs-12 col-sm-12 col-md-12 homebanner-holder">
                 @yield('content')
@@ -296,7 +318,31 @@
     <script src="{{ asset('FrontTemplate') }}/assets/js/lightbox.min.js"></script>
     <script src="{{ asset('FrontTemplate') }}/assets/js/bootstrap-select.min.js"></script>
     <script src="{{ asset('FrontTemplate') }}/assets/js/wow.min.js"></script>
+    <!-- sweetalert2 -->
+    <script src="{{ asset('/Templates/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
     <script src="{{ asset('FrontTemplate') }}/assets/js/scripts.js"></script>
+
+
+    <script src="{{ asset('js/cutom.js') }}"></script>
+    @stack('scripts')
+
+    @if (session()->has('success'))
+        <script>
+            Swal.fire(
+                'Sukses!',
+                '{{ session('message') }}',
+                'success'
+            )
+        </script>
+    @elseif (session()->has('error_msg'))
+        <script>
+            Swal.fire(
+                'Sukses!',
+                '{{ session('message') }}',
+                'error'
+            )
+        </script>
+    @endif
 </body>
 
 </html>

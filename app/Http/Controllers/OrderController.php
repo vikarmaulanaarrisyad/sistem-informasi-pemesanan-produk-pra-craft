@@ -124,9 +124,20 @@ class OrderController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Order $order)
+    public function destroy($id)
     {
-        //
+        $orderDetail = OrderDetail::findOrFail($id);
+        $orderDetail->delete();
+
+        // if ($orderDetail) {
+        //     $orderDetail->delete();
+
+        //     return redirect()->route('orders.index');
+        // } else {
+        //     return redirect()->back()->with('message', 'Product removed from cart!', 422);
+        // }
+
+        return redirect()->route('orders.index');
     }
 
     public function updateStatus(Request $request, $id)

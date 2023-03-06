@@ -13,8 +13,9 @@ class FrontController extends Controller
 {
     public function index()
     {
+        $userId = auth()->id();
         $categories  = Category::all();
-        // $order = Order::all();
+        // $order = Order::with('orderDetails', 'user')->where('user_id', $userId)->first();
         // $orderDetail = OrderDetail::where('order_id', $order->id)->get();
         $products = Product::where('stok', '!=', 0)->get();
 
