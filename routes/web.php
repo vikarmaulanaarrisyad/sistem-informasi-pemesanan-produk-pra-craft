@@ -47,6 +47,7 @@ Route::group([
         Route::get('/orders/{id}/detail', [OrderController::class, 'detail'])->name('orders.detail');
         Route::get('/orders/{id}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
         Route::get('/orders/{id}/print_invoice', [OrderController::class, 'printInvoice'])->name('orders.print_invoice');
+        Route::post('/orders/{id}/add_ongkir', [OrderController::class, 'tambah_ongkir'])->name('orders.add_ongkir');
         Route::put('/orders/{id}/update_status', [OrderController::class, 'updateStatus'])->name('orders.update_status');
     });
 
@@ -89,6 +90,8 @@ Route::group([
     Route::group([
         'middleware' => 'role:user'
     ], function () {
-        // Route::resource('/order', FrontOrderController::class);
+        Route::get('/ongkir', [OrderController::class, 'index']);
+        Route::post('/ongkir', [OrderController::class, 'check_ongkir']);
+        Route::get('/cities/{province_id}', [OrderController::class, 'getCities']);
     });
 });

@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\City;
+use App\Models\Ongkir;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Product;
+use App\Models\Province;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Kavist\RajaOngkir\Facades\RajaOngkir;
 
 class OrderController extends Controller
 {
@@ -96,8 +100,9 @@ class OrderController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function detail($id)
+    public function detail(Request $request, $id)
     {
+        $provinces = Province::pluck('name', 'province_id');
         $orders = Order::with('user')->findOrfail($id);
         if ($orders->user_id != auth()->id() && auth()->user()->hasRole('user')) {
             abort(404);
@@ -110,7 +115,8 @@ class OrderController extends Controller
             $subTotal += $item->jumlah * $product->harga;
         }
 
-        return view('admin.orders.detail', compact('orders', 'orderDetail', 'subTotal'));
+
+        return view('admin.orders.detail', compact('orders', 'orderDetail', 'subTotal', 'provinces'));
     }
 
     /**
@@ -195,5 +201,43 @@ class OrderController extends Controller
         }
 
         return response()->json(['message' => 'Pesanan berhasil ' . $statusText]);
+    }
+
+    public function getCities($id)
+    {
+        $city = City::where('province_id', $id)->pluck('name', 'city_id');
+        return response()->json($city);
+    }
+
+    public function check_ongkir(Request $request)
+    {
+        $cost = RajaOngkir::ongkosKirim([
+            'origin'        => '472', // ID kota/kabupaten asal
+            'destination'   => $request->city_destination, // ID kota/kabupaten tujuan
+            'weight'        => $request->weight, // berat barang dalam gram
+            'courier'       => $request->courier // kode kurir pengiriman: ['jne', 'tiki', 'pos'] untuk starter
+        ])->get();
+
+
+        return response()->json($cost);
+    }
+
+    function tambah_ongkir(Request $request, $id)
+    {
+        // shippingCost
+        $ongkir = new Ongkir();
+        $ongkir->kota_asal = $request->city_origin ?? 472;
+        $ongkir->kota_tujuan = $request->city_destination;
+        $ongkir->kurir = $request->courier;
+        $ongkir->biaya = $request->ongkir;
+        $ongkir->save();
+
+        $order = Order::findOrFail($id);
+        $order->shipping_cost_id = $ongkir->id;
+        $order->save();
+
+
+
+        return response()->json(['message' => 'Data ongkir tersimpan']);
     }
 }

@@ -12,6 +12,7 @@
         "barryvdh/laravel-dompdf": "^2.0",
         "doctrine/dbal": "^3.6",
         "guzzlehttp/guzzle": "^7.2",
+        "kavist/rajaongkir": "^1.1",
         "laravel/framework": "^10.0",
         "laravel/jetstream": "^3.0",
         "laravel/sanctum": "^3.2",

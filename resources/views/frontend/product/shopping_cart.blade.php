@@ -74,9 +74,8 @@
                                             <td colspan="7">
                                                 <div class="shopping-cart-btn">
                                                     <span class="">
-                                                        <a href="#"
-                                                            class="btn btn-upper btn-primary outer-left-xs">Continue
-                                                            Shopping</a>
+                                                        <a href="{{ route('orders.detail', $order->id) }}"
+                                                            class="btn btn-upper btn-primary outer-left-xs">Cek Ongkir</a>
                                                         <button type="submit"
                                                             class="btn btn-upper btn-primary pull-right outer-right-xs">Update
                                                             shopping cart</button>

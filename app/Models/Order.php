@@ -19,6 +19,11 @@ class Order extends Model
         return $this->hasMany(OrderDetail::class);
     }
 
+    public function ongkirs()
+    {
+        return $this->belongsTo(Ongkir::class,'shipping_cost_id','id');
+    }
+
     public function scopeUser($query)
     {
         return $query->where('user_id', auth()->id());
