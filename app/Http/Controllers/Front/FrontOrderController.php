@@ -189,17 +189,19 @@ class FrontOrderController extends Controller
     }
 
     // Mengubah jumlah produk dalam keranjang belanja
-    public function updateCart(Request $request, $id)
+    public function updateCart(Request $request, $orderId, $productId)
     {
-        return 'halaman updateCart';
-        // $cart = Cart::find($id);
-        // if ($cart) {
-        //     $cart->quantity = $request->quantity;
-        //     $cart->save();
-        //     return redirect()->route('cart.show')->with('success', 'Cart updated!');
-        // } else {
-        //     return redirect()->route('cart.show')->with('error', 'Cart not found!');
-        // }
+
+        $orderDetail = OrderDetail::where('order_id', $orderId)
+            ->where('product_id', $productId)
+            ->first();
+        $orderDetail->jumlah = $request->qty;
+        $orderDetail->save();
+
+        return back()->with([
+            'message' => 'Pesanan anda berhasil diubah.',
+            'success' => true
+        ]);
     }
 
     public function removeFromCart($orderId, $productId)

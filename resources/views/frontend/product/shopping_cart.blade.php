@@ -15,25 +15,25 @@
                 <div class="shopping-cart">
                     <div class="shopping-cart-table ">
                         <div class="table-responsive">
-                            <form method="GET">
 
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th class="cart-romove item">Remove</th>
-                                            <th class="cart-description item">Image</th>
-                                            <th class="cart-product-name item">Product Name</th>
-                                            <th class="cart-qty item">Quantity</th>
-                                            <th class="cart-sub-total item">Subtotal</th>
-                                        </tr>
-                                    </thead><!-- /thead -->
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="cart-romove item">Remove</th>
+                                        <th class="cart-description item">Image</th>
+                                        <th class="cart-product-name item">Product Name</th>
+                                        <th class="cart-qty item">Quantity</th>
+                                        <th class="cart-sub-total item">Subtotal</th>
+                                    </tr>
+                                </thead><!-- /thead -->
 
-                                    <tbody>
+                                <tbody>
 
-                                        @if ($order && $order->orderDetails != null && $order->orderDetails()->exists())
+                                    @if ($order && $order->orderDetails != null && $order->orderDetails()->exists())
 
-                                            @foreach ($carts as $order)
-                                                @foreach ($order->orderDetails as $item)
+                                        @foreach ($carts as $order)
+                                            @foreach ($order->orderDetails as $item)
+                                                <form action="{{ route('orders.update_cart', [$order->id,$item->product->id]) }}" >
                                                     <tr>
                                                         <td class="romove-item">
 
@@ -67,13 +67,8 @@
                                                                 data-subtotal="{{ $item->product->harga }}">{{ $item->jumlah * $item->product->harga }}</span>
                                                         </td>
                                                     </tr>
-                                                @endforeach
                                             @endforeach
-
-                                        @endif
-
-                                    </tbody>
-                                    <tfoot>
+                                        @endforeach
                                         <tr>
                                             <td colspan="7">
                                                 <div class="shopping-cart-btn">
@@ -81,15 +76,18 @@
                                                         <a href="#"
                                                             class="btn btn-upper btn-primary outer-left-xs">Continue
                                                             Shopping</a>
-                                                        <a href="{{ route('orders.update_cart', $order->id) }}"
+                                                        <button type="submit"
                                                             class="btn btn-upper btn-primary pull-right outer-right-xs">Update
-                                                            shopping cart</a>
+                                                            shopping cart</button>
                                                     </span>
                                                 </div><!-- /.shopping-cart-btn -->
                                             </td>
                                         </tr>
-                                    </tfoot>
-                                </table>
+                                    @endif
+
+                                </tbody>
+
+                            </table>
 
                             </form>
 

@@ -47,7 +47,6 @@ Route::group([
         Route::get('/orders/{id}/detail', [OrderController::class, 'detail'])->name('orders.detail');
         Route::get('/orders/{id}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
         Route::get('/orders/{id}/print_invoice', [OrderController::class, 'printInvoice'])->name('orders.print_invoice');
-        Route::put('/orders/{id}/update_status', [OrderController::class, 'updateStatus'])->name('orders.update_status');
     });
 
     Route::resource('/orders', OrderController::class)->except('edit', 'create');
@@ -56,9 +55,9 @@ Route::group([
         Route::get('/orders/{order}/show_cart', [FrontOrderController::class, 'showCart'])->name('orders.show_cart');
         Route::get('/orders/{order}/products/{product}/delete', [FrontOrderController::class, 'removeFromCart'])->name('orders.remove_cart');
         Route::post('/orders/{slug}/add_cart', [FrontOrderController::class, 'addToCart'])->name('orders.add_cart');
-        Route::get('/orders/{id}/update_cart', [FrontOrderController::class, 'updateCart'])->name('orders.update_cart');
+        // Route::get('/orders/{id}/update_cart', [FrontOrderController::class, 'updateCart'])->name('orders.update_cart');
+        Route::get('/orders/{order_id}/product/{product_id}/proses_update_cart', [FrontOrderController::class, 'updateCart'])->name('orders.update_cart');
     });
-
 
 
     // Role Admin
