@@ -77,6 +77,10 @@ class User extends Authenticatable
         return $query->where('role_id', 2);
     }
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 
     public function statusColor()
     {
@@ -95,6 +99,8 @@ class User extends Authenticatable
 
         return $color;
     }
+
+
     public function statusText()
     {
         $text = '';

@@ -52,11 +52,11 @@ Route::group([
 
     Route::resource('/orders', OrderController::class)->except('edit', 'create');
 
-
     Route::controller(FrontOrderController::class)->group(function () {
         Route::get('/orders/{order}/show_cart', [FrontOrderController::class, 'showCart'])->name('orders.show_cart');
         Route::get('/orders/{order}/products/{product}/delete', [FrontOrderController::class, 'removeFromCart'])->name('orders.remove_cart');
         Route::post('/orders/{slug}/add_cart', [FrontOrderController::class, 'addToCart'])->name('orders.add_cart');
+        Route::get('/orders/{id}/update_cart', [FrontOrderController::class, 'updateCart'])->name('orders.update_cart');
     });
 
 

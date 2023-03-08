@@ -78,57 +78,94 @@ class FrontOrderController extends Controller
         DB::beginTransaction();
 
         try {
-            // Cek apakah user sudah memiliki order pada hari ini
-            $user_id = auth()->user()->id;
-            $tgl_pesanan = date('Y-m-d');
-            $existing_order = Order::where('user_id', $user_id)
-                ->whereDate('tgl_pesanan', $tgl_pesanan)
-                ->first();
+
+            // Ambil data produk yang ingin dipesan
             $product = Product::where('slug', $request->slug)->first();
-            // dd($product);
 
-            // jika user belum memiliki order pada hari ini, buat order baru
-            if (!$existing_order) {
-                // Buat order baru
-                $order = new Order;
-                $order->user_id = auth()->user()->id;
-                $order->tgl_pesanan = date('Y-m-d');
-                $order->total_harga = 0;
-                $order->save();
+            //mendapatkan user yang sedang login
+            $userId = auth()->user()->id;
 
-                // Tambahkan order detail ke order baru
-                $orderDetail = new OrderDetail;
-                $orderDetail->order_id = $order->id;
-                $orderDetail->product_id = $product->id;
-                $orderDetail->jumlah = $request->qty;
-                $orderDetail->jml_stok = 0;
-                $orderDetail->save();
+            // Ambil tanggal pesanan hari ini
+            $tglSekarang = date('Y-m-d');
+
+            // cari pesanan yang masih dalam sataus 'pending' untuk user yang sedang login
+            $pendingOrder = Order::where('user_id', $userId)
+                ->where('status', 'pending')
+                ->first();
+
+            // Cek apakah user sudah memiliki pesanan yang masih dalam status 'pending'
+            if ($pendingOrder) {
+
+                // Update jumlah qty sesuai produk di dalam order detail
+                foreach ($pendingOrder->orderDetails as $orderDetail) {
+                    $orderDetail->order_id = $pendingOrder->id;
+                    $orderDetail->product_id = $product->id;
+                    $orderDetail->jumlah += $request->qty;
+                    $orderDetail->jml_stok = 0;
+                    $orderDetail->save();
+                }
+
+                DB::commit();
+
+                // return 'User sudah memiliki pesanan yang masih dalam status "pending". Tidak perlu membuat pesanan baru. dan hanya menambah jumlah di tabel orderDetail';
+                return redirect()->route('orders.show_cart', $product->slug)
+                    ->with([
+                        'message' => 'Pesanan anda berhasil dimasukkan keranjang.',
+                        'success' => true,
+                    ]);
             } else {
-                // Jika user sudah memiliki order pada hari ini, cek apakah produk sudah ada di dalam order detail
-                $existing_order_detail = OrderDetail::where('order_id', $existing_order->id)
-                    ->where('product_id', $product->id)
+                // Cari pesanan yang sudah berhasil untuk user yang sedang login
+                $successOrder = Order::where('user_id', $userId)
+                    ->where('status', 'success')
                     ->first();
 
-                if (!$existing_order_detail) {
-                    // Jika produk belum ada di dalam order detail, tambahkan order detail ke order tersebut
+                if ($successOrder) {
+                    // Jika user sudah memiliki pesanan yang sudah berhasil,
+                    // maka buatkan pesanan baru untuk user yang sedang login
+                    $order = new Order;
+                    $order->user_id = $userId;
+                    $order->tgl_pesanan = $tglSekarang;
+                    $order->total_harga = 0;
+                    $order->save();
+
                     $orderDetail = new OrderDetail;
-                    $orderDetail->order_id = $existing_order->id;
+                    $orderDetail->order_id = $order->id;
                     $orderDetail->product_id = $product->id;
                     $orderDetail->jumlah = $request->qty;
                     $orderDetail->jml_stok = 0;
                     $orderDetail->save();
+
+                    DB::commit();
+
+                    return redirect()->route('orders.show_cart', $product->slug)
+                        ->with([
+                            'message' => 'Pesanan anda berhasil dimasukkan keranjang.',
+                            'success' => true,
+                        ]);
                 } else {
-                    // Jika produk sudah ada di dalam order detail, tambahkan jumlah pesanan ke order detail tersebut
-                    $existing_order_detail->jumlah += $request->qty;
-                    $existing_order_detail->save();
+                    // Jika user belum memiliki pesanan, maka buatkan pesanan baru
+                    $order = new Order;
+                    $order->user_id = $userId;
+                    $order->tgl_pesanan = $tglSekarang;
+                    $order->total_harga = 0;
+                    $order->save();
+
+                    $orderDetail = new OrderDetail;
+                    $orderDetail->order_id = $order->id;
+                    $orderDetail->product_id = $product->id;
+                    $orderDetail->jumlah = $request->qty;
+                    $orderDetail->jml_stok = 0;
+                    $orderDetail->save();
+
+                    DB::commit();
+
+                    return redirect()->route('orders.show_cart', $product->slug)
+                        ->with([
+                            'message' => 'Pesanan anda berhasil dimasukkan keranjang.',
+                            'success' => true,
+                        ]);
                 }
             }
-            DB::commit();
-            return back()
-                ->with([
-                    'message' => 'Pesanan anda berhasil di masukkan keranjang',
-                    'success' => true,
-                ]);
         } catch (\Throwable $th) {
             //throw $th;
             DB::rollBack();
@@ -143,7 +180,10 @@ class FrontOrderController extends Controller
 
     public function showCart()
     {
-        $carts = Order::where('user_id', auth()->user()->id)->with('orderDetails.product')->get();
+        $carts = Order::with('orderDetails.product')
+            ->where('user_id', auth()->user()->id)
+            ->where('status', 'pending')
+            ->get();
 
         return view('frontend.product.shopping_cart', compact('carts'));
     }
@@ -151,6 +191,7 @@ class FrontOrderController extends Controller
     // Mengubah jumlah produk dalam keranjang belanja
     public function updateCart(Request $request, $id)
     {
+        return 'halaman updateCart';
         // $cart = Cart::find($id);
         // if ($cart) {
         //     $cart->quantity = $request->quantity;
@@ -168,23 +209,14 @@ class FrontOrderController extends Controller
         foreach ($orderDetail as $item) {
             if ($item->product_id == $item->product->id) {
                 // return 'yes sama';
+                $item->order->delete();
                 $item->delete();
                 return redirect()->route('homepage');
             } else {
-                return 'No';
+                //
+                return redirect()->back();
             }
         }
-        dd($orderDetail);
-
-        // $orderDetail = OrderDetail::findOrFail($id);
-        // $orderDetail->delete();
-
-        // if ($orderDetail) {
-        //     $orderDetail->delete();
-        //     return redirect()->back()->with('message', 'Product removed from cart!');
-        // } else {
-        //     return redirect()->back()->with('message', 'Product removed from cart!', 422);
-        // }
     }
 
     // Checkout

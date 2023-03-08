@@ -50,9 +50,25 @@
                     <div class="cnt-account">
                         <ul class="list-unstyled">
                             <li class="header_cart hidden-xs"><a href="#"><span>My Cart</span></a></li>
-                            <li class="check"><a href="{{ route('orders.show_cart', $order->id) }}"><span>Checkout</span></a></li>
-                            <li class="login"><a href="{{ route('login') }}"><span>Login</span></a></li>
-                            <li class="login"><a href="{{ route('register') }}"><span>Register</span></a></li>
+
+                            @if ($order && $order->orderDetails != null && $order->orderDetails()->exists())
+                                <li class="check"><a
+                                        href="{{ route('orders.show_cart', $order->id) }}"><span>Checkout</span></a>
+                                </li>
+                            @else
+                                <li class="check"><a href="{{ route('homepage') }}"><span>Checkout</span></a>
+                                </li>
+                            @endif
+
+
+                            @auth
+                                <li class="login"><a href="{{ route('dashboard') }}"><span>Dashboard</span></a></li>
+                            @endauth
+
+                            @guest
+                                <li class="login"><a href="{{ route('login') }}"><span>Login</span></a></li>
+                                <li class="login"><a href="{{ route('register') }}"><span>Register</span></a></li>
+                            @endguest
                         </ul>
                     </div>
                     <!-- /.cnt-account -->
@@ -328,11 +344,14 @@
 
     @if (session()->has('success'))
         <script>
-            Swal.fire(
-                'Sukses!',
-                '{{ session('message') }}',
-                'success'
-            )
+            setTimeout(() => {
+                Swal.fire(
+                    'Sukses!',
+                    '{{ session('message') }}',
+                    'success'
+                )
+                location.reload();
+            }, 3000);
         </script>
     @elseif (session()->has('error_msg'))
         <script>

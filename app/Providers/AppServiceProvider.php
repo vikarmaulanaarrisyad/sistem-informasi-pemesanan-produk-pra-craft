@@ -22,8 +22,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        view()->composer('*', function ($view)  {
-            $view->with('order', Order::with('orderDetails', 'user')->where('user_id', auth()->user()->id)->first());
+        view()->composer('*', function ($view) {
+            $user = auth()->id();
+
+            if ($user == $user) {
+                $view->with('order', Order::with('orderDetails.product', 'user')->where('user_id', $user)->where('status','pending')->first());
+            }
         });
     }
 }

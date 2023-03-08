@@ -14,16 +14,15 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function scopeUser($query)
-    {
-        return $query->where('user_id', auth()->id());
-    }
-
     public function orderDetails()
     {
         return $this->hasMany(OrderDetail::class);
     }
 
+    public function scopeUser($query)
+    {
+        return $query->where('user_id', auth()->id());
+    }
 
     public function statusColor()
     {
