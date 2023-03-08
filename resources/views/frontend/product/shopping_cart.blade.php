@@ -33,39 +33,40 @@
 
                                         @foreach ($carts as $order)
                                             @foreach ($order->orderDetails as $item)
-                                                <form action="{{ route('orders.update_cart', [$order->id,$item->product->id]) }}" >
-                                                    <tr>
-                                                        <td class="romove-item">
+                                                <form action="{{ route('orders.update_cart', $order->id) }}">
 
-                                                            <a href="{{ route('orders.remove_cart', [$item->id, $item->product->id]) }}"
-                                                                title="cancel" class="icon"><i
-                                                                    class="fa fa-trash-o"></i></a>
+                                                    <input type="hidden" name="product_ids[]"
+                                                        value="{{ $item->product->id }}" <tr>
+                                                    <td class="romove-item">
 
-                                                        </td>
-                                                        <td class="cart-image">
-                                                            <img src="{{ Storage::url($item->product->gambar) }}"
-                                                                alt="">
-                                                        </td>
-                                                        <td class="cart-product-name-info">
-                                                            <h4 class="cart-product-description"><a
-                                                                    href="{{ route('produk.show', $item->product->slug) }}">{{ $item->product->nama_produk }}</a>
-                                                            </h4>
-                                                        </td>
+                                                        <a href="{{ route('orders.remove_cart', [$item->id, $item->product->id]) }}"
+                                                            title="cancel" class="icon"><i class="fa fa-trash-o"></i></a>
 
-                                                        </td>
-                                                        <td class="cart-product-quantity">
-                                                            <div class="quant-input">
+                                                    </td>
+                                                    <td class="cart-image">
+                                                        <img src="{{ Storage::url($item->product->gambar) }}"
+                                                            alt="">
+                                                    </td>
+                                                    <td class="cart-product-name-info">
+                                                        <h4 class="cart-product-description"><a
+                                                                href="{{ route('produk.show', $item->product->slug) }}">{{ $item->product->nama_produk }}</a>
+                                                        </h4>
+                                                    </td>
 
-                                                                <input type="number" class="form-control" min="1"
-                                                                    value="{{ $item->jumlah }}" style="width: 100px"
-                                                                    name="qty" data-qty="{{ $item->jumlah }}"
-                                                                    onkeyup="{this}">
-                                                            </div>
-                                                        </td>
-                                                        <td class="cart-product-sub-total">
-                                                            <span class="cart-sub-total-price"
-                                                                data-subtotal="{{ $item->product->harga }}">{{ $item->jumlah * $item->product->harga }}</span>
-                                                        </td>
+                                                    </td>
+                                                    <td class="cart-product-quantity">
+                                                        <div class="quant-input">
+
+                                                            <input type="number" class="form-control" min="1"
+                                                                value="{{ $item->jumlah }}" style="width: 100px"
+                                                                name="qty[]" data-qty="{{ $item->jumlah }}"
+                                                                onkeyup="{this}">
+                                                        </div>
+                                                    </td>
+                                                    <td class="cart-product-sub-total">
+                                                        <span class="cart-sub-total-price"
+                                                            data-subtotal="{{ $item->product->harga }}">{{ format_uang($item->jumlah * $item->product->harga) }}</span>
+                                                    </td>
                                                     </tr>
                                             @endforeach
                                         @endforeach
@@ -210,22 +211,22 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            $('.cart-product-quantity').on('click', 'input[name="qty"]', function() {
+            $('.cart-product-quantity').on('click', 'input[name="qty[]"]', function() {
                 var qty = $(this).val(); // mendapatkan nilai qty
                 var subtotal = $(this).closest('tr').find('.cart-sub-total-price').data(
                     'subtotal'); // mendapatkan nilai subtotal
 
                 var total = qty * subtotal;
-                $(this).closest('tr').find('.cart-sub-total-price').text(total);
+                $(this).closest('tr').find('.cart-sub-total-price').text(format_uang(total));
 
             });
-            $('.cart-product-quantity').on('change', 'input[name="qty"]', function() {
+            $('.cart-product-quantity').on('change', 'input[name="qty[]"]', function() {
                 var qty = $(this).val(); // mendapatkan nilai qty
                 var subtotal = $(this).closest('tr').find('.cart-sub-total-price').data(
                     'subtotal'); // mendapatkan nilai subtotal
 
                 var total = qty * subtotal;
-                $(this).closest('tr').find('.cart-sub-total-price').text(total);
+                $(this).closest('tr').find('.cart-sub-total-price').text(format_uang(total));
 
             });
 
