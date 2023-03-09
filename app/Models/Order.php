@@ -21,7 +21,7 @@ class Order extends Model
 
     public function ongkirs()
     {
-        return $this->belongsTo(Ongkir::class,'shipping_cost_id','id');
+        return $this->belongsTo(Ongkir::class, 'shipping_cost_id', 'id')->withDefault(0);
     }
 
     public function scopeUser($query)

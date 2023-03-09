@@ -11,6 +11,7 @@ use App\Models\Province;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Kavist\RajaOngkir\Facades\RajaOngkir;
+use App\Services\Midtrans\CreateSnapTokenService;
 
 class OrderController extends Controller
 {
@@ -108,15 +109,17 @@ class OrderController extends Controller
             abort(404);
         }
 
+
         $orderDetail = OrderDetail::where('order_id', $orders->id)->get();
         $subTotal = 0;
+        $ongkir = $orders->ongkirs->biaya ?? 0;
+
         foreach ($orderDetail as $item) {
             $product = Product::findOrFail($item->product_id);
             $subTotal += $item->jumlah * $product->harga;
         }
 
-
-        return view('admin.orders.detail', compact('orders', 'orderDetail', 'subTotal', 'provinces'));
+        return view('admin.orders.detail', compact('orders', 'orderDetail', 'subTotal', 'provinces', 'ongkir'));
     }
 
     /**
@@ -229,7 +232,7 @@ class OrderController extends Controller
         $ongkir->kota_asal = $request->city_origin ?? 472;
         $ongkir->kota_tujuan = $request->city_destination;
         $ongkir->kurir = $request->courier;
-        $ongkir->biaya = $request->ongkir;
+        $ongkir->biaya = $request->ongkir ?? 0;
         $ongkir->save();
 
         $order = Order::findOrFail($id);

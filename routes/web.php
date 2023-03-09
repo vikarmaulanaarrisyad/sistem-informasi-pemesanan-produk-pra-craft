@@ -93,5 +93,8 @@ Route::group([
         Route::get('/ongkir', [OrderController::class, 'index']);
         Route::post('/ongkir', [OrderController::class, 'check_ongkir']);
         Route::get('/cities/{province_id}', [OrderController::class, 'getCities']);
+
+
+        Route::post('payments/midtrans-notification', [PaymentCallbackController::class, 'receive']);
     });
 });

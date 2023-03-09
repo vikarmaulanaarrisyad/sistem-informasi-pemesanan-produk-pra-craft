@@ -11,64 +11,66 @@
 @section('content')
     <div class="row">
 
-        <div class="col-md-12">
-            <x-card>
+        @if ($orders->status == 'pending')
+            <div class="col-md-12">
+                <x-card>
 
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="font-weight-bold">PROVINSI TUJUAN</label>
-                            <select class="form-control provinsi-tujuan" name="province_destination">
-                                <option value="0">-- pilih provinsi tujuan --</option>
-                                @foreach ($provinces as $province => $value)
-                                    <option value="{{ $province }}">{{ $value }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="font-weight-bold">KOTA / KABUPATEN TUJUAN</label>
-                            <select class="form-control kota-tujuan" name="city_destination">
-                                <option value="">-- pilih kota tujuan --</option>
-                            </select>
-                        </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="font-weight-bold">PROVINSI TUJUAN</label>
+                                <select class="form-control provinsi-tujuan" name="province_destination">
+                                    <option value="0">-- pilih provinsi tujuan --</option>
+                                    @foreach ($provinces as $province => $value)
+                                        <option value="{{ $province }}">{{ $value }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-bold">KOTA / KABUPATEN TUJUAN</label>
+                                <select class="form-control kota-tujuan" name="city_destination">
+                                    <option value="">-- pilih kota tujuan --</option>
+                                </select>
+                            </div>
 
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>PROVINSI TUJUAN</label>
+                                <select class="form-control kurir" name="courier">
+                                    <option value="0">-- pilih kurir --</option>
+                                    <option value="jne">JNE</option>
+                                    <option value="pos">POS</option>
+                                    <option value="tiki">TIKI</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-bold">BERAT (GRAM)</label>
+                                <input type="number" class="form-control" name="weight" id="weight"
+                                    placeholder="Masukkan Berat (GRAM)">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Pilih hari</label>
+                                <select class="form-control kurir" name="ongkir" id="ongkir">
+                                    <option value="">-- pilih hari --</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>PROVINSI TUJUAN</label>
-                            <select class="form-control kurir" name="courier">
-                                <option value="0">-- pilih kurir --</option>
-                                <option value="jne">JNE</option>
-                                <option value="pos">POS</option>
-                                <option value="tiki">TIKI</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="font-weight-bold">BERAT (GRAM)</label>
-                            <input type="number" class="form-control"   name="weight" id="weight"
-                                placeholder="Masukkan Berat (GRAM)">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>Pilih hari</label>
-                            <select class="form-control kurir" name="ongkir" id="ongkir">
-                                <option value="">-- pilih hari --</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
 
-                <x-slot name="footer">
-                    <button class="btn btn-md btn-success btn-sm btn-check"><i class="fas fa-motorcycle"></i> Cek
-                        Ongkir</button>
-                    
-                    <button  class="btn btn-md btn-primary btn-sm btn-add-ongkir"><i class="fas fa-plus-circle"></i> Tambah
-                        Ongkir</button>
-                </x-slot>
-            </x-card>
-        </div>
+                    <x-slot name="footer">
+                        <button class="btn btn-md btn-success btn-sm btn-check"><i class="fas fa-motorcycle"></i> Cek
+                            Ongkir</button>
 
+                        <button class="btn btn-md btn-primary btn-sm btn-add-ongkir"><i class="fas fa-plus-circle"></i>
+                            Tambah
+                            Ongkir</button>
+                    </x-slot>
+                </x-card>
+            </div>
+        @endif
 
         <div class="col-md-6">
             <x-card>
@@ -143,11 +145,11 @@
                     @endforeach
                     <tr>
                         <td colspan="4" class="text-bold text-right">Biaya Pengiriman</td>
-                        <td class="text-right"> {{ format_uang($orders->ongkirs->biaya) }}</td>
+                        <td class="text-right"> {{ format_uang($ongkir) }}</td>
                     </tr>
                     <tr>
                         <td colspan="4" class="text-right text-bold">TOTAL Bayar</td>
-                        <td class="text-right text-bold">{{ format_uang($subTotal +  $orders->ongkirs->biaya) }}</td>
+                        <td class="text-right text-bold">{{ format_uang($subTotal + $ongkir) }}</td>
                     </tr>
                 </x-table>
 
@@ -161,8 +163,9 @@
                                     onclick="editForm('{{ route('orders.update_status', $orders->id) }}', 'cancel', 'Yakin ingin membatalkan pencairan terpilih?', 'secondary')">Batalkan</button>
 
                                 @if ($orders->shipping_cost_id != null)
-                                    <button class="btn btn-primary float-right"
-                                        onclick="editForm('{{ route('orders.update_status', $orders->id) }}', 'pending', 'Yakin ingin melanjutkan pesanan anda ?', 'success')">Bayar</button>
+                                    {{-- <button class="btn btn-primary float-right"
+                                        onclick="editForm('{{ route('orders.update_status', $orders->id) }}', 'success', 'Yakin ingin melanjutkan pesanan anda ?', 'success')">Bayar</button> --}}
+                                    <button class="btn btn-primary float-right" id="pay-button">Bayar</button>
                                 @endif
                             @endif
 
@@ -382,7 +385,8 @@
                             $.each(response[0]['costs'], function(key, value) {
 
                                 $('#ongkir').append(
-                                    '<option value="' + value.cost[0].value  + '">' + 'Rp. ' +
+                                    '<option value="' + value.cost[0].value + '">' +
+                                    'Rp. ' +
                                     value.cost[0].value + ' ' + value.cost[0].etd +
                                     ' hari' +
                                     '</option>');
